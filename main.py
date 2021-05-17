@@ -16,7 +16,7 @@ PATH = os.getcwd()
 s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data = 100,100,3,400,0.05,0.1,0.2,1,int(round(8192/10,0)),2,'real'
 num_neurons,lr_boundaries_LSMT,lr_init_LSMT,training_steps_LSMT = 50,[200,400],0.1,500
 lr_boundaries_NN,lr_init_NN,training_steps_NN,mc_runs = [100,150],0.1,150,50
-file,path = r'C:\Users\leona\Google Drive\USP\Doutorado\PoliTO\Option Stopping\Codes\Implementation\optimal-stopping-cnn\Datasets', r'\SP500- daily - 30Y.csv'
+path = r'C:\Users\leona\Google Drive\USP\Doutorado\PoliTO\Option Stopping\Codes\Implementation\optimal-stopping-cnn\Datasets'
 
 
 
@@ -28,27 +28,29 @@ for i in range(10,101,5):
     
     # num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[500,1000,1500],0.05,2000,500
     
+    file = r'\SP500- daily - 30Y_train.csv'
     BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path)
+                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
     
+    file = r'\SP500- daily - 30Y_test.csv'
     BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,file,path)
+                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)
     
     
     # num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[500,1000,1500],0.05,2000,500
-    
+    file = r'\SP500- daily - 30Y_train.csv'
     BeckerH_r_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path)
-    
+                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
+    file = r'\SP500- daily - 30Y_test.csv'
     BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,file,path)
+                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)
     
     # our model using history of prices returns data
     
     num_neurons = 50
-    
+    file = r'\SP500- daily - 30Y_train.csv'
     Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path)
-    
+                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
+    file = r'\SP500- daily - 30Y_test.csv'
     Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,file,path)
+                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)
