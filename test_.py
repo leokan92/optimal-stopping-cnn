@@ -117,6 +117,7 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker Hist Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
     write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
+    np.save('Results/'+'BeckeH_'+str(N),np.asarray(px_vec))
     del neural_net
     torch.cuda.empty_cache()
     
@@ -173,6 +174,7 @@ def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker Hist, returns Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
     write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
+    np.save('Results/'+'BeckeH_r_'+str(N),np.asarray(px_vec))
     del neural_net
     torch.cuda.empty_cache()
 
@@ -238,5 +240,6 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker/Ours CNN Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
     write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
+    np.save('Results/'+'Becker_cnn_'+str(N),np.asarray(px_vec))
     del neural_net
     torch.cuda.empty_cache()
