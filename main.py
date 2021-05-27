@@ -8,7 +8,7 @@ Main
 """
 import torch
 from torch import nn
-from train_ import Becker_train_model, BeckerH_train_model,BeckerH_r_train_model,Becker_mod_cnn_train_model
+from train_ import Becker_train_model, BeckerH_train_model,BeckerH_r_train_model,Becker_mod_cnn_train_model,Becker_mod_cnn_train_model_2
 from test_ import Becker_test_model,BeckeH_test_model,BeckeH_r_test_model,Becker_mod_cnn_test_model
 import os
 
@@ -28,13 +28,13 @@ for i in range(10,500,30):
     
     # num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[500,1000,1500],0.05,2000,500
     
-    file = r'\SP500- daily - 30Y_train.csv'
-    BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
+    # file = r'\SP500- daily - 30Y_train.csv'
+    # BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+    #                       PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
     
-    file = r'\SP500- daily - 30Y_test.csv'
-    BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)
+    # file = r'\SP500- daily - 30Y_test.csv'
+    # BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+    #                       PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)
     
     
     # num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[500,1000,1500],0.05,2000,500
@@ -47,10 +47,20 @@ for i in range(10,500,30):
     
     # our model using history of prices returns data
     
+    # num_neurons = 50
+    # file = r'\SP500- daily - 30Y_train.csv'
+    # Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+    #                       PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
+    # file = r'\SP500- daily - 30Y_test.csv'
+    # Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+    #                       PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)
+    
     num_neurons = 50
-    file = r'\SP500- daily - 30Y_train.csv'
-    Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+    file = r'\crudeoil_train.csv'
+    #file = r'\SP500- daily - 30Y_train.csv'
+    Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
                           PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file)
-    file = r'\SP500- daily - 30Y_test.csv'
+    file = r'\crudeoil_train.csv'
+    #file = r'\SP500- daily - 30Y_test.csv'
     Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
                           PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file)

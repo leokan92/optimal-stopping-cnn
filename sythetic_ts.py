@@ -96,11 +96,16 @@ def harmonic_sample(S0,K,N,d,batch_size):
     return np.asarray(results)
 
 
-def return_real_data_sample(path,file,N,d,batch_size,S0):
+def return_real_data_sample(path,file,N,d,batch_size,S0,sample_type):
     num_cores = multiprocessing.cpu_count()
     df = pd.read_csv(path+file,sep=';',thousands=',')
     #df = pd.read_csv(path+file,sep=',')
-    returns = np.diff(df['Close']) / df['Close'][1:]
+    returns = returns = np.diff(df['Close']) / df['Close'][1:]
+    if sample_type == 'none':
+        if sample_type == 'train':
+            returns = np.diff(df['Close']) / df['Close'][1+int(len(df['Close'])*0.3):]
+        else:
+            returns = np.diff(df['Close']) / df['Close'][1:int(len(df['Close'])*0.3)]   
     def rand_sample(S0,N,d,returns,i):
         asset_list = []
         for j in range(0,d):
@@ -109,4 +114,7 @@ def return_real_data_sample(path,file,N,d,batch_size,S0):
         return asset_list
     results = Parallel(n_jobs=num_cores)(delayed(rand_sample)(S0,N,d,returns,i) for i in range(0,batch_size))
     return np.asarray(results)
+
+
+
 

@@ -93,3 +93,16 @@ def generate_real_data_sample(u):
     g_tau = p_[:,:,-1] # this is the payoff at time T, from here on we go recursivly back in time
     return X,p_,g_tau
 
+def generate_real_data_sample_val(u):
+    path,file,N,d,batch_size,S0,T,r,K,sample_type = u
+    X = return_real_data_sample(path,file,N,d,batch_size,S0,sample_type)
+    X_train = X[:int(len(X)*0.7)]
+    t = np.linspace(T/N, T, N)
+    p_train = np.exp(-r*t) * np.maximum(np.max(X_train, axis = 1, keepdims=True) - K, 0.) # we evaluate the payoff for the whole batch at every point in time
+    g_tau_train = p_train[:,:,-1] # this is the payoff at time T, from here on we go recursivly back in time
+    X_val = X[int(len(X)*0.7):]
+    t = np.linspace(T/N, T, N)
+    p_val = np.exp(-r*t) * np.maximum(np.max(X_val, axis = 1, keepdims=True) - K, 0.) # we evaluate the payoff for the whole batch at every point in time
+    g_tau_val = p_train[:,:,-1] # this is the payoff at time T, from here on we go recursivly back in time
+    return X,p_,g_tau
+

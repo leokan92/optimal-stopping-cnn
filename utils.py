@@ -52,7 +52,7 @@ def choose_gen(type_of_data):
         gen_function = generate_real_data_sample
     return gen_function
 
-def select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,path,file):
+def select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,sample_type,path,file):
     if type_of_data == 'dm':
         selected_inputs = (s_0,K,T,N,r,delta,sigma,d,seed,batch_size)
     elif type_of_data == 'ar':
@@ -66,7 +66,7 @@ def select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,pa
     elif type_of_data == 'harmonic':
         selected_inputs = (s_0,K,T,N,r,d,batch_size)
     if type_of_data =='real':
-        selected_inputs = (path,file,N,d,batch_size,s_0,T,r,K)
+        selected_inputs = (path,file,N,d,batch_size,s_0,T,r,K,sample_type)
     return selected_inputs
 
 def write_file(text):

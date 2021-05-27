@@ -40,7 +40,7 @@ def Becker_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
         torch.manual_seed(seed)
         np.random.seed(seed)
         
-        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,file,path)
+        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,'none',file,path)
         
         X,p_,g_tau = gen_func(input_gen)
         
@@ -86,7 +86,7 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
         torch.manual_seed(seed)
         np.random.seed(seed)
         
-        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,file,path)
+        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,'none',file,path)
         
         X,p_,g_tau = gen_func(input_gen)
         
@@ -141,7 +141,7 @@ def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
         torch.manual_seed(seed)
         np.random.seed(seed)
         
-        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,file,path)
+        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,'none',file,path)
         
         X,p_,g_tau = gen_func(input_gen)
         
@@ -203,7 +203,7 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
         torch.manual_seed(seed)
         np.random.seed(seed)
         
-        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,file,path)
+        input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,'none',file,path)
         
         X,p_,g_tau = gen_func(input_gen)
         
