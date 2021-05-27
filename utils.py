@@ -8,6 +8,7 @@ utils functions
 """
 import torch
 import numpy as np
+import pandas as pd
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -79,3 +80,8 @@ def write_table(N,P,max_P,std_P):
     text = str(N)+';'+str(P)+';'+str(max_P)+';'+str(std_P)+'\n'
     f.write(text)
     f.close()
+    
+def calculate_sigma(path,file):
+    df = pd.read_csv(path+file,sep=';',thousands=',')
+    #returns = np.diff(df['Close'])  
+    return np.std(df['Close'])

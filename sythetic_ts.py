@@ -100,7 +100,7 @@ def return_real_data_sample(path,file,N,d,batch_size,S0,sample_type):
     num_cores = multiprocessing.cpu_count()
     df = pd.read_csv(path+file,sep=';',thousands=',')
     #df = pd.read_csv(path+file,sep=',')
-    returns = returns = np.diff(df['Close']) / df['Close'][1:]
+    returns = np.diff(df['Close']) / df['Close'][1:]
     if sample_type == 'none':
         if sample_type == 'train':
             returns = np.diff(df['Close']) / df['Close'][1+int(len(df['Close'])*0.3):]

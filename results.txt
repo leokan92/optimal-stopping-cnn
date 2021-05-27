@@ -132,3 +132,4 @@
  Params: N = 10 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 29.448455810546875 | Max Price: 51.712646484375
  Params: N = 40 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 58.79153060913086 | Max Price: 154.38682556152344
  Params: N = 70 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 106.98741912841797 | Max Price: 242.26165771484375
+ Params: N = 30 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 55.578094482421875 | Max Price: 122.64855194091797

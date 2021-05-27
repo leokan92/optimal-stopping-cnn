@@ -12,11 +12,11 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 from sys import version 
-print(' Least-Squares MC for American Options: Conditions for Replication '.center(85,"-"))
-print('Python version:     ' + version)
-print('Numpy version:      ' + np.__version__)
-print('IPython version:    ' + IPython.__version__)
-print('-'*85)
+# print(' Least-Squares MC for American Options: Conditions for Replication '.center(85,"-"))
+# print('Python version:     ' + version)
+# print('Numpy version:      ' + np.__version__)
+# print('IPython version:    ' + IPython.__version__)
+# print('-'*85)
 
 import numpy as np
 
@@ -68,7 +68,6 @@ class AmericanOptionsLSMC(object):
         self.time_unit = self.T / float(self.M)
         self.discount = np.exp(-self.r * self.time_unit)
 
-    @property
     def MCprice_matrix(self, seed = 123):
         """ Returns MC price matrix rows: time columns: price-path simulation """
         np.random.seed(seed)
@@ -82,36 +81,32 @@ class AmericanOptionsLSMC(object):
                                   + self.sigma * brownian * np.sqrt(self.time_unit)))
         return MCprice_matrix
 
-    @property
     def MCpayoff(self):
         """Returns the inner-value of American Option"""
         if self.option_type == 'call':
-            payoff = np.maximum(self.MCprice_matrix - self.strike,
+            payoff = np.maximum(self.MCprice_matrix() - self.strike,
                            np.zeros((self.M + 1, self.simulations),dtype=np.float64))
         else:
-            payoff = np.maximum(self.strike - self.MCprice_matrix,
+            payoff = np.maximum(self.strike - self.MCprice_matrix(),
                             np.zeros((self.M + 1, self.simulations),
                             dtype=np.float64))
         return payoff
 
-    @property
     def value_vector(self):
-        value_matrix = np.zeros_like(self.MCpayoff)
-        value_matrix[-1, :] = self.MCpayoff[-1, :]
+        value_matrix = np.zeros_like(self.MCpayoff())
+        value_matrix[-1, :] = self.MCpayoff()[-1, :]
         for t in range(self.M - 1, 0 , -1):
-            regression = np.polyfit(self.MCprice_matrix[t, :], value_matrix[t + 1, :] * self.discount, 5)
-            continuation_value = np.polyval(regression, self.MCprice_matrix[t, :])
-            value_matrix[t, :] = np.where(self.MCpayoff[t, :] > continuation_value,
-                                          self.MCpayoff[t, :],
+            regression = np.polyfit(self.MCprice_matrix()[t, :], value_matrix[t + 1, :] * self.discount, 5)
+            continuation_value = np.polyval(regression, self.MCprice_matrix()[t, :])
+            value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
+                                          self.MCpayoff()[t, :],
                                           value_matrix[t + 1, :] * self.discount)
 
         return value_matrix[1,:] * self.discount
 
 
-    @property
-    def price(self): return np.sum(self.value_vector) / float(self.simulations)
+    def price(self): return np.sum(self.value_vector()) / float(self.simulations)
     
-    @property
     def delta(self):
         diff = self.S0 * 0.01
         myCall_1 = AmericanOptionsLSMC(self.option_type, self.S0 + diff, 
@@ -120,9 +115,9 @@ class AmericanOptionsLSMC(object):
         myCall_2 = AmericanOptionsLSMC(self.option_type, self.S0 - diff, 
                                        self.strike, self.T, self.M, 
                                        self.r, self.div, self.sigma, self.simulations)
-        return (myCall_1.price - myCall_2.price) / float(2. * diff)
+        return (myCall_1.price() - myCall_2.price()) / float(2. * diff)
     
-    @property
+
     def gamma(self):
         diff = self.S0 * 0.01
         myCall_1 = AmericanOptionsLSMC(self.option_type, self.S0 + diff, 
@@ -131,9 +126,9 @@ class AmericanOptionsLSMC(object):
         myCall_2 = AmericanOptionsLSMC(self.option_type, self.S0 - diff, 
                                        self.strike, self.T, self.M, 
                                        self.r, self.div, self.sigma, self.simulations)
-        return (myCall_1.delta - myCall_2.delta) / float(2. * diff)
+        return (myCall_1.delta() - myCall_2.delta()) / float(2. * diff)
     
-    @property
+
     def vega(self):
         diff = self.sigma * 0.01
         myCall_1 = AmericanOptionsLSMC(self.option_type, self.S0, 
@@ -144,9 +139,9 @@ class AmericanOptionsLSMC(object):
                                        self.strike, self.T, self.M, 
                                        self.r, self.div, self.sigma - diff, 
                                        self.simulations)
-        return (myCall_1.price - myCall_2.price) / float(2. * diff)    
+        return (myCall_1.price() - myCall_2.price()) / float(2. * diff)    
     
-    @property
+
     def rho(self):        
         diff = self.r * 0.01
         if (self.r - diff) < 0:        
@@ -158,7 +153,7 @@ class AmericanOptionsLSMC(object):
                                        self.strike, self.T, self.M, 
                                        self.r, self.div, self.sigma, 
                                        self.simulations)
-            return (myCall_1.price - myCall_2.price) / float(diff)
+            return (myCall_1.price() - myCall_2.price()) / float(diff)
         else:
             myCall_1 = AmericanOptionsLSMC(self.option_type, self.S0, 
                                        self.strike, self.T, self.M, 
@@ -168,9 +163,9 @@ class AmericanOptionsLSMC(object):
                                        self.strike, self.T, self.M, 
                                        self.r - diff, self.div, self.sigma, 
                                        self.simulations)
-            return (myCall_1.price - myCall_2.price) / float(2. * diff)
+            return (myCall_1.price() - myCall_2.price()) / float(2. * diff)
     
-    @property
+
     def theta(self): 
         diff = 1 / 252.
         myCall_1 = AmericanOptionsLSMC(self.option_type, self.S0, 
@@ -181,10 +176,5 @@ class AmericanOptionsLSMC(object):
                                        self.strike, self.T - diff, self.M, 
                                        self.r, self.div, self.sigma, 
                                        self.simulations)
-        return (myCall_2.price - myCall_1.price) / float(2. * diff)
+        return (myCall_2.price() - myCall_1.price()) / float(2. * diff)
     
-import doctest
-doctest.testmod()
-
-AmericanPUT = AmericanOptionsLSMC('put', 36., 40., 1., 50, 0.06, 0.06, 0.2, 10000  )
-print('Price: ', AmericanPUT.price)
