@@ -38,7 +38,7 @@ class AmericanOptionsLSMC(object):
     4.4731177017712209
     """
 
-    def __init__(self, option_type, S0, strike, T, M, r, div, sigma, simulations):
+    def __init__(self, option_type, S0, strike, T, M, r, div, sigma, simulations,path_type):
         try:
             self.option_type = option_type
             assert isinstance(option_type, str)
@@ -56,6 +56,7 @@ class AmericanOptionsLSMC(object):
             self.sigma = float(sigma)
             assert simulations > 0
             self.simulations = int(simulations)
+            self.path_type = path_type
         except ValueError:
             print('Error passing Options parameters')
 
@@ -68,17 +69,34 @@ class AmericanOptionsLSMC(object):
         self.time_unit = self.T / float(self.M)
         self.discount = np.exp(-self.r * self.time_unit)
 
+    # def MCprice_matrix(self, seed = 123):
+    #     """ Returns MC price matrix rows: time columns: price-path simulation """
+    #     np.random.seed(seed)
+    #     MCprice_matrix = np.zeros((self.M + 1, self.simulations), dtype=np.float64)
+    #     MCprice_matrix[0,:] = self.S0
+    #     for t in range(1, self.M + 1):
+    #         brownian = np.random.standard_normal(int(self.simulations / 2))
+    #         brownian = np.concatenate((brownian, -brownian))
+    #         MCprice_matrix[t, :] = (MCprice_matrix[t - 1, :]
+    #                               * np.exp((self.r - self.sigma ** 2 / 2.) * self.time_unit
+    #                               + self.sigma * brownian * np.sqrt(self.time_unit)))
+    #     return MCprice_matrix
+    
+    
     def MCprice_matrix(self, seed = 123):
         """ Returns MC price matrix rows: time columns: price-path simulation """
         np.random.seed(seed)
         MCprice_matrix = np.zeros((self.M + 1, self.simulations), dtype=np.float64)
         MCprice_matrix[0,:] = self.S0
-        for t in range(1, self.M + 1):
-            brownian = np.random.standard_normal(int(self.simulations / 2))
-            brownian = np.concatenate((brownian, -brownian))
-            MCprice_matrix[t, :] = (MCprice_matrix[t - 1, :]
-                                  * np.exp((self.r - self.sigma ** 2 / 2.) * self.time_unit
-                                  + self.sigma * brownian * np.sqrt(self.time_unit)))
+        if self.path_type == 'garch':
+            print('GARCH simulation')
+        else:
+            for t in range(1, self.M + 1):
+                brownian = np.random.standard_normal(int(self.simulations / 2))
+                brownian = np.concatenate((brownian, -brownian))
+                MCprice_matrix[t, :] = (MCprice_matrix[t - 1, :]
+                                      * np.exp((self.r - self.sigma ** 2 / 2.) * self.time_unit
+                                      + self.sigma * brownian * np.sqrt(self.time_unit)))
         return MCprice_matrix
 
     def MCpayoff(self):

@@ -300,7 +300,7 @@ def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type
         loss = torch.mean(loss)
         px_hist.append(px_mean_batch.item())
         
-        #Valida
+        #Validation: 
         with torch.no_grad():
             input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,'val',file,path)
             X,p_,g_tau = gen_func(input_gen)
@@ -308,10 +308,6 @@ def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type
             X,p_,g_tau = torch_t(X), torch_t(p_),torch_t(g_tau)
             X = torch.diff(X,1,2,prepend = torch.unsqueeze(X[:,:,0],2))
             state = torch.cat((X,p_),axis = 1)
-            
-            
-            loss = np.zeros(1)
-            loss = torch_t(loss)
             state_hist = []
             hist_state = torch.zeros((state.shape[0],state.shape[1],N)).to(device)
             for n in range(0, N, 1):
@@ -321,20 +317,13 @@ def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type
             for n in range(N-2, -1, -1): # loop from T-T/N to T/N
                 net_n = neural_net(state_hist[:,:,:,n],non_tran_var)
                 F_n   = torch.sigmoid(net_n)
-                loss -= torch.mean(p_[:, :, n] * F_n + g_tau * (1. - F_n)) # the loss for a single stopping time problem, we want to maximize this loss in every time step
                 g_tau = torch.where(net_n > 0, p_[:, :, n], g_tau) # this is our new g_tau now, we hand it backwards in time
             px_mean_batch = torch.mean(g_tau)
             px_hist_val.append(px_mean_batch.item())
 
-        for n in range(N-2, -1, -1): # loop from T-T/N to T/N
-            net_n = neural_net(state_hist[:,:,:,n],non_tran_var)
-            F_n   = torch.sigmoid(net_n)
-            loss -= torch.mean(p_[:, :, n] * F_n + g_tau * (1. - F_n)) # the loss for a single stopping time problem, we want to maximize this loss in every time step
-            g_tau = torch.where(net_n > 0, p_[:, :, n], g_tau) # this is our new g_tau now, we hand it backwards in time
         
-        
-        if train_step> 10:
-            if px_hist_val[-1]>max_px and px_hist_val[-1]<np.mean(px_hist_val[-10:-1])*1.70:
+        if train_step> 5:
+            if px_hist_val[-1]>max_px and px_hist_val[-1]<np.mean(px_hist_val[-5:-1])*1.70:
             #if np.mean(px_hist[-100:])>np.mean(px_hist[-500:]):
                 #print('Best Model Saved')
                 torch.save(neural_net.state_dict(), PATH+'/best_model_becker.pt')

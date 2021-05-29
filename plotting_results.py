@@ -139,11 +139,11 @@ plt.show()
 # Crude oil price plotting
 #################################################################################
 
-train_series = np.load('Results/Becker_cnn_train_10.npy',allow_pickle=True)
-val_series = np.load('Results/Becker_cnn_val_10.npy',allow_pickle=True)
+train_series = np.load('Results/Becker_cnn_train_30.npy',allow_pickle=True)
+val_series = np.load('Results/Becker_cnn_val_30.npy',allow_pickle=True)
 
 
-MA_steps = 200
+MA_steps = 1
 
 plt.plot(moving_average(train_series,MA_steps),label = 'Training')
 plt.plot(moving_average(val_series,MA_steps),label = 'Validation')

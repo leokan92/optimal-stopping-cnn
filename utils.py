@@ -51,6 +51,9 @@ def choose_gen(type_of_data):
     if type_of_data == 'real':
         from gen_data import generate_real_data_sample
         gen_function = generate_real_data_sample
+    if type_of_data == 'real_val':
+        from gen_data import generate_real_data_sample_val
+        gen_function = generate_real_data_sample_val
     return gen_function
 
 def select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,sample_type,path,file):
@@ -67,6 +70,8 @@ def select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,sa
     elif type_of_data == 'harmonic':
         selected_inputs = (s_0,K,T,N,r,d,batch_size)
     if type_of_data =='real':
+        selected_inputs = (path,file,N,d,batch_size,s_0,T,r,K)
+    if type_of_data =='real_val':
         selected_inputs = (path,file,N,d,batch_size,s_0,T,r,K,sample_type)
     return selected_inputs
 
@@ -83,5 +88,9 @@ def write_table(N,P,max_P,std_P):
     
 def calculate_sigma(path,file):
     df = pd.read_csv(path+file,sep=';',thousands=',')
+    #returns = df['Close']
     #returns = np.diff(df['Close'])  
-    return np.std(df['Close'])
+    #returns = np.diff(df['Close'])/df['Close'][1:]
+    returns = np.std(df['Close'])/np.mean(df['Close'])
+    #return np.std(df['Close'])
+    return returns

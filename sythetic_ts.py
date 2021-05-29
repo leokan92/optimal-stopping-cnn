@@ -84,7 +84,7 @@ def harmonic_sample(S0,K,N,d,batch_size):
             irregular_time_samples = time_sampler.sample_irregular_time(num_points=N*2-1, keep_percentage=50)
             sinusoid = ts.signals.Sinusoidal(amplitude = 0.2,frequency=0.3)
             white_noise = ts.noise.GaussianNoise(std=0.15)
-            timeseries = ts.TimeSeries(sinusoid, noise_generator=white_noise)
+            timeseries = ts.TimeSeries(sinusoid,  noise_generator=white_noise)
             samples, signals, errors = timeseries.sample(irregular_time_samples)
             sinusoid_2 = ts.signals.Sinusoidal(amplitude = 0.2,frequency=2)
             timeseries_2 = ts.TimeSeries(sinusoid_2, noise_generator=white_noise)
@@ -101,16 +101,17 @@ def return_real_data_sample(path,file,N,d,batch_size,S0,sample_type):
     df = pd.read_csv(path+file,sep=';',thousands=',')
     #df = pd.read_csv(path+file,sep=',')
     returns = np.diff(df['Close']) / df['Close'][1:]
-    if sample_type == 'none':
+    if sample_type != 'test':
         if sample_type == 'train':
-            returns = np.diff(df['Close']) / df['Close'][1+int(len(df['Close'])*0.3):]
+            returns = np.diff(df['Close'][int(len(df['Close'])*0.3):]) / df['Close'][int(len(df['Close'])*0.3):-1]
         else:
-            returns = np.diff(df['Close']) / df['Close'][1:int(len(df['Close'])*0.3)]   
+            returns = np.diff(df['Close'][:int(len(df['Close'])*0.3)]) / df['Close'][:int(len(df['Close'])*0.3)-1]   
     def rand_sample(S0,N,d,returns,i):
         asset_list = []
         for j in range(0,d):
             rand = np.random.randint(0,len(returns)-N-1)
-            asset_list.append(np.concatenate((np.array([S0]),S0+np.cumsum(S0*returns[rand:rand+N-1].to_numpy()*10))))
+            asset_list.append(np.concatenate((np.array([S0]),S0*np.cumprod(1+returns[rand:rand+N-1].to_numpy()))))
+            # asset_list.append(np.concatenate((np.array([S0]),S0+np.cumsum(S0*returns[rand:rand+N-1].to_numpy()*10))))
         return asset_list
     results = Parallel(n_jobs=num_cores)(delayed(rand_sample)(S0,N,d,returns,i) for i in range(0,batch_size))
     return np.asarray(results)
