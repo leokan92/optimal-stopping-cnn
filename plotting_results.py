@@ -12,7 +12,11 @@ import matplotlib.pyplot as plt
 
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'valid') / w
-
+def convert_array_tensor(arr):
+    list_arr = []
+    for i in arr:
+        list_arr.append(i.item())
+    return np.asarray(list_arr)
 
 def return_series(file_name,n_series):
     results = pd.read_csv('Results\\HARM\\'+file_name, delimiter = ";", header=None)
@@ -107,11 +111,7 @@ plt.show()
 # Plotting distributions of the Monte Carlo simulations
 #################################################################################
 
-def convert_array_tensor(arr):
-    list_arr = []
-    for i in arr:
-        list_arr.append(i.item())
-    return np.asarray(list_arr)
+
 
 N = 160
 
@@ -152,3 +152,37 @@ plt.title('Oil prices Training and Validation average payoff / MA('+str(MA_steps
 plt.xlabel('Average Payoff')
 plt.ylabel('epochs')
 plt.show()
+
+#################################################################################
+# Crude oil price plotting - Comparing distributions
+#################################################################################
+N =  30
+
+cnn = np.load('Results/Energy/Becker_cnn_'+str(N)+'.npy',allow_pickle=True)
+cnn = convert_array_tensor(cnn)
+
+max_dist = np.load('Results/Energy/Max_dist_'+str(N)+'.npy',allow_pickle=True)
+max_dist = convert_array_tensor(max_dist)
+
+lsmc = np.load('Results/Energy/LSMC_'+str(N)+'.npy',allow_pickle=True)
+lsmc = convert_array_tensor(lsmc)
+lsmc = np.random.choice(lsmc,len(cnn))
+
+
+lsmc_test = np.load('Results/Energy/LSMC_test_'+str(N)+'.npy',allow_pickle=True)
+lsmc_test = convert_array_tensor(lsmc_test)
+lsmc_test = np.random.choice(lsmc_test,len(cnn))
+
+
+#plt.figure(figsize=(15,5))
+sns.displot({'LSMC Train Vol.':lsmc,'LSMC Test Vol.':lsmc_test,'Max Value Dist.':max_dist,'CNN':cnn}, kind="kde", fill=True,legend=True).set_axis_labels('Average Payoff','Density')
+#sns.displot(cnn, kind="kde", fill=True,label = 'CNN')
+plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
+plt.show()
+
+
+
+
+
+
+

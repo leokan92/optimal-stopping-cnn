@@ -119,7 +119,9 @@ class AmericanOptionsLSMC(object):
             value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
                                           self.MCpayoff()[t, :],
                                           value_matrix[t + 1, :] * self.discount)
-
+        px_vec = value_matrix[1,:] * self.discount
+        np.save('Results/'+'LSMC_'+str(self.M),np.asarray(px_vec))
+        
         return value_matrix[1,:] * self.discount
 
 

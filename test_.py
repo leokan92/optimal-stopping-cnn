@@ -241,5 +241,6 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     write_file(text)
     write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
     np.save('Results/'+'Becker_cnn_'+str(N),np.asarray(px_vec))
+    np.save('Results/'+'Max_dist_'+str(N),np.asarray(px_vec_max))
     del neural_net
     torch.cuda.empty_cache()
