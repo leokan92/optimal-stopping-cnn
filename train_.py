@@ -304,7 +304,7 @@ def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type
         with torch.no_grad():
             input_gen = select_input(s_0,K,T,N,r,delta,sigma,d,batch_size,seed,type_of_data,order,'val',file,path)
             X,p_,g_tau = gen_func(input_gen)
-    
+
             X,p_,g_tau = torch_t(X), torch_t(p_),torch_t(g_tau)
             X = torch.diff(X,1,2,prepend = torch.unsqueeze(X[:,:,0],2))
             state = torch.cat((X,p_),axis = 1)

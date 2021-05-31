@@ -10,6 +10,8 @@ LSMC implementation from: https://github.com/jpcolino/IPython_notebooks/blob/mas
 import IPython
 import numpy as np
 import warnings
+import pyflux as pf 
+import pandas as pd
 warnings.filterwarnings("ignore")
 from sys import version 
 # print(' Least-Squares MC for American Options: Conditions for Replication '.center(85,"-"))
@@ -90,7 +92,16 @@ class AmericanOptionsLSMC(object):
         MCprice_matrix[0,:] = self.S0
         if self.path_type == 'garch':
             print('GARCH simulation')
+            path = r'C:\Users\leona\Google Drive\USP\Doutorado\PoliTO\Option Stopping\Codes\Implementation\optimal-stopping-cnn\Datasets'
+            file = r'\crudeoil_train.csv'  
+            df = pd.read_csv(path+file,sep=';',thousands=',')
+            returns = np.diff(df['Close']) / df['Close'][:-1]
+            model = pf.GARCH(returns.values,p=1,q=1)
+            model.fit(method='BBVI', iterations=10000, optimizer='ADAM')
+            X = model.sample(self.simulations)
+            MCprice_matrix = np.concatenate((np.expand_dims(self.S0*np.ones(self.simulations),0),(self.S0*np.cumprod(X[:,:self.M].T +1,0))),0)
         else:
+            print('Brownian Motion Simulation')
             for t in range(1, self.M + 1):
                 brownian = np.random.standard_normal(int(self.simulations / 2))
                 brownian = np.concatenate((brownian, -brownian))

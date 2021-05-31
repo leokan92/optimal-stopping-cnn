@@ -139,11 +139,11 @@ plt.show()
 # Crude oil price plotting
 #################################################################################
 
-train_series = np.load('Results/Becker_cnn_train_30.npy',allow_pickle=True)
-val_series = np.load('Results/Becker_cnn_val_30.npy',allow_pickle=True)
+train_series = np.load('Results/Energy/Becker_cnn_train_30.npy',allow_pickle=True)
+val_series = np.load('Results/Energy/Becker_cnn_val_30.npy',allow_pickle=True)
 
 
-MA_steps = 1
+MA_steps = 100
 
 plt.plot(moving_average(train_series,MA_steps),label = 'Training')
 plt.plot(moving_average(val_series,MA_steps),label = 'Validation')
@@ -156,7 +156,7 @@ plt.show()
 #################################################################################
 # Crude oil price plotting - Comparing distributions
 #################################################################################
-N =  30
+N =  200
 
 cnn = np.load('Results/Energy/Becker_cnn_'+str(N)+'.npy',allow_pickle=True)
 cnn = convert_array_tensor(cnn)
