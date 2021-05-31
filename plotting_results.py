@@ -180,6 +180,33 @@ sns.displot({'LSMC Train Vol.':lsmc,'LSMC Test Vol.':lsmc_test,'Max Value Dist.'
 plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
 plt.show()
 
+#################################################################################
+# Crude oil price plotting -GARCH
+#################################################################################
+
+N =  30
+
+cnn = np.load('Results/Energy/Becker_cnn_'+str(N)+'.npy',allow_pickle=True)
+cnn = convert_array_tensor(cnn)
+
+max_dist = np.load('Results/Energy/Max_dist_'+str(N)+'.npy',allow_pickle=True)
+max_dist = convert_array_tensor(max_dist)
+
+
+lsmc_test = np.load('Results/Energy/LSMC_garch_'+str(N)+'.npy',allow_pickle=True)
+lsmc_test = convert_array_tensor(lsmc_test)
+lsmc_test = np.random.choice(lsmc_test,len(cnn))
+
+
+#plt.figure(figsize=(15,5))
+sns.displot({'LSMC GARCH Vol.':lsmc_test,'Max Value Dist.':max_dist,'CNN':cnn}, kind="kde", fill=True,legend=True).set_axis_labels('Average Payoff','Density')
+#sns.displot(cnn, kind="kde", fill=True,label = 'CNN')
+plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
+plt.show()
+
+
+
+
 
 
 
