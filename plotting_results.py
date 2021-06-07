@@ -204,7 +204,56 @@ sns.displot({'LSMC GARCH Vol.':lsmc_test,'Max Value Dist.':max_dist,'CNN':cnn}, 
 plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
 plt.show()
 
+#################################################################################
+# Crude oil price plotting - testing data for LSMC
+#################################################################################
 
+N =  30
+
+cnn = np.load('Results/Energy/Becker_cnn_'+str(N)+'.npy',allow_pickle=True)
+cnn = convert_array_tensor(cnn)
+
+max_dist = np.load('Results/Energy/Max_dist_'+str(N)+'.npy',allow_pickle=True)
+max_dist = convert_array_tensor(max_dist)
+
+
+lsmc_test = np.load('Results/Energy/LSMC_apply_test_'+str(N)+'.npy',allow_pickle=True)
+lsmc_test = convert_array_tensor(lsmc_test)
+lsmc_test = np.random.choice(lsmc_test,len(cnn))
+
+
+#plt.figure(figsize=(15,5))
+sns.displot({'LSMC testing returns Vol.':lsmc_test,'Max Value Dist.':max_dist,'CNN':cnn}, kind="kde", fill=True,legend=True).set_axis_labels('Average Payoff','Density')
+#sns.displot(cnn, kind="kde", fill=True,label = 'CNN')
+plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
+plt.xlim(-5,20)
+plt.show()
+
+
+#################################################################################
+# Crude oil price plotting - training data for CNN pricing
+#################################################################################
+
+N =  30
+
+cnn = np.load('Results/Energy/Becker_cnn_data_train_'+str(N)+'.npy',allow_pickle=True)
+cnn = convert_array_tensor(cnn)
+
+max_dist = np.load('Results/Energy/Max_dist_data_train_'+str(N)+'.npy',allow_pickle=True)
+max_dist = convert_array_tensor(max_dist)
+
+
+lsmc_test = np.load('Results/Energy/LSMC_GARCH_'+str(N)+'.npy',allow_pickle=True)
+lsmc_test = convert_array_tensor(lsmc_test)
+lsmc_test = np.random.choice(lsmc_test,len(cnn))
+
+
+#plt.figure(figsize=(15,5))
+sns.displot({'LSMC testing returns Vol.':lsmc_test,'Max Value Dist.':max_dist,'CNN':cnn}, kind="kde", fill=True,legend=True).set_axis_labels('Average Payoff','Density')
+#sns.displot(cnn, kind="kde", fill=True,label = 'CNN')
+plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
+plt.xlim(-5,20)
+plt.show()
 
 
 

@@ -14,6 +14,8 @@ import pyflux as pf
 import pandas as pd
 warnings.filterwarnings("ignore")
 from sys import version 
+from joblib import Parallel, delayed
+import multiprocessing
 # print(' Least-Squares MC for American Options: Conditions for Replication '.center(85,"-"))
 # print('Python version:     ' + version)
 # print('Numpy version:      ' + np.__version__)
@@ -102,7 +104,23 @@ class AmericanOptionsLSMC(object):
             # model.fit(method='BBVI', iterations=10000, optimizer='ADAM')
             # X = model.sample(self.simulations)
             # MCprice_matrix = np.concatenate((np.expand_dims(self.S0*np.ones(self.simulations),0),(self.S0*np.cumprod(X[:,:self.M].T +1,0))),0)
-        else:
+        if self.path_type == 'real':
+            path = r'C:\Users\leona\Google Drive\USP\Doutorado\PoliTO\Option Stopping\Codes\Implementation\optimal-stopping-cnn\Datasets'
+            file = r'\crudeoil_test.csv'
+            num_cores = multiprocessing.cpu_count()
+            df = pd.read_csv(path+file,sep=';',thousands=',')
+            #df = pd.read_csv(path+file,sep=',')
+            returns = np.diff(df['Close']) / df['Close'][:-1]
+            def rand_sample(i):
+                asset_list = []
+                d=1
+                for j in range(0,d):
+                    rand = np.random.randint(0,len(returns)-self.M)
+                    asset_list.append(np.concatenate((np.array([self.S0]),self.S0*np.cumprod(1+returns[rand:rand+self.M].to_numpy()))))
+                return asset_list
+            results = Parallel(n_jobs=num_cores)(delayed(rand_sample)(i) for i in range(0,self.simulations))
+            MCprice_matrix = np.squeeze(np.asarray(results).T,1)
+        if self.path_type=='brownian_motion':
             print('Brownian Motion Simulation')
             for t in range(1, self.M + 1):
                 brownian = np.random.standard_normal(int(self.simulations / 2))
