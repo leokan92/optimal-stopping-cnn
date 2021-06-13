@@ -80,8 +80,8 @@ def write_file(text):
     f.write(text)
     f.close()
     
-def write_table(N,P,max_P,std_P):
-    f = open("table.txt", "a")
+def write_table(model_name,N,P,max_P,std_P):
+    f = open('table+'+model_name+'.txt', 'a')
     text = str(N)+';'+str(P)+';'+str(max_P)+';'+str(std_P)+'\n'
     f.write(text)
     f.close()
@@ -104,8 +104,8 @@ def generate_avg_payoff_step(output_hist,p_,batch_size):
     return df_posi_payoff
 
 def save_exer_region(df_posi_payoff,N,model_name):
-        diff = np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))
-        zeros = np.zeros(len(np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))))
-        df_posi_payoff_zeros = pd.DataFrame({'position':diff,'payoffs':zeros})
-        df_posi_payoff = df_posi_payoff.append(df_posi_payoff_zeros)
-        np.save('Results\exerc_region_N_'+str(N)+'_'+model_name+'.npy',df_posi_payoff.groupby('position').mean().to_numpy().T)
+    diff = np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))
+    zeros = np.zeros(len(np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))))
+    df_posi_payoff_zeros = pd.DataFrame({'position':diff,'payoffs':zeros})
+    df_posi_payoff = df_posi_payoff.append(df_posi_payoff_zeros)
+    np.save('Results\exerc_region_N_'+str(N)+'_'+model_name+'.npy',df_posi_payoff.groupby('position').mean().to_numpy().T)

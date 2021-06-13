@@ -99,6 +99,59 @@ sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style=
 f.savefig('harmonic_results.pdf', bbox_inches='tight')
 
 
+########################################################################################################
+# Plotting the Avg Pay with standar deviation for each N on fractional Brownian motion time-series:
+######################################################################################################## 
+
+
+path = 'Results/HARM/'
+file_name = 'harmonic_results.txt'
+model_names = 'BeckeH', 'Becker_cnn'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = results.N.values.astype(str)
+
+df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
+
+temp = df_for_seaborn.loc[df_for_seaborn['Models']=='Becker']
+temp.loc[temp['N']=='10'].std()
+temp.loc[temp['N']=='10'].mean()
+
+f = plt.figure(figsize=(15,5))
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+#sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
+# pallet options: Set1
+f.savefig('harmonic_table.pdf', bbox_inches='tight')
+
+
+#################################################################################
+# Plotting the Avg Pay with standar deviation for each N on Harmonic time-series:
+################################################################################# 
+
+
+path = 'Results/FBM/'
+file_name = 'harmonic_results.txt'
+model_names = 'BeckeH', 'Becker_cnn'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = results.N.values.astype(str)
+
+df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
+
+temp = df_for_seaborn.loc[df_for_seaborn['Models']=='Becker']
+temp.loc[temp['N']=='10'].std()
+temp.loc[temp['N']=='10'].mean()
+
+f = plt.figure(figsize=(15,5))
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+#sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
+# pallet options: Set1
+f.savefig('fbm_table.pdf', bbox_inches='tight')
+
 
 
 ##########################################################################

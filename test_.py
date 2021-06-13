@@ -63,12 +63,12 @@ def Becker_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     px_std = torch.std(torch.stack(px_vec))
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
-    write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
+    write_table('becker',N,px_mean.item(),px_mean_max.item(),px_std.item())
     del neural_net
     torch.cuda.empty_cache()
 
 def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -119,13 +119,13 @@ def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     px_std = torch.std(torch.stack(px_vec))
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker Hist, returns Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
-    write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
-    np.save('Results/'+'BeckeH_r_'+str(N),np.asarray(px_vec))
+    write_table('becker',N,px_mean.item(),px_mean_max.item(),px_std.item())
+    np.save(path_output+'BeckeH_r_'+str(N),np.asarray(px_vec))
     del neural_net
     torch.cuda.empty_cache()
     
 def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -180,8 +180,8 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     save_exer_region(df_posi_payoff,N,'becker')
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker Hist Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
-    write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
-    np.save('Results/'+'BeckeH_'+str(N),np.asarray(px_vec))
+    write_table('becker',N,px_mean.item(),px_mean_max.item(),px_std.item())
+    np.save(path_output+'BeckeH_'+str(N),np.asarray(px_vec))
     del neural_net
     torch.cuda.empty_cache()
     
@@ -189,7 +189,7 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
 
 
 def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -256,8 +256,8 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker/Ours CNN Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
-    write_table(N,px_mean.item(),px_mean_max.item(),px_std.item())
-    np.save('Results/'+'Becker_cnn_'+str(N),np.asarray(px_vec))
-    np.save('Results/'+'Max_dist_'+str(N),np.asarray(px_vec_max))
+    write_table('cnn',N,px_mean.item(),px_mean_max.item(),px_std.item())
+    np.save(path_output+'Becker_cnn_'+str(N),np.asarray(px_vec))
+    np.save(path_output+'Max_dist_'+str(N),np.asarray(px_vec_max))
     del neural_net
     torch.cuda.empty_cache()

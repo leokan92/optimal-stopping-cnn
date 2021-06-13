@@ -309,3 +309,34 @@
  Params: N = 130 | d = 1 | type of data: dm| Becker Hist Avg price = 19.84039878845215 | Max Price: 27.19512939453125
  Params: N = 130 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.84039878845215 | Max Price: 27.19512939453125
  Params: N = 160 | d = 1 | type of data: dm| Becker Hist Avg price = 19.866079330444336 | Max Price: 27.315887451171875
+ Params: N = 160 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.866079330444336 | Max Price: 27.315887451171875
+ Params: N = 190 | d = 1 | type of data: dm| Becker Hist Avg price = 19.890153884887695 | Max Price: 27.42441749572754
+ Params: N = 190 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.890153884887695 | Max Price: 27.42441749572754
+ Params: N = 220 | d = 1 | type of data: dm| Becker Hist Avg price = 19.903348922729492 | Max Price: 27.515941619873047
+ Params: N = 220 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.9033260345459 | Max Price: 27.515941619873047
+ Params: N = 250 | d = 1 | type of data: dm| Becker Hist Avg price = 19.9150333404541 | Max Price: 27.576446533203125
+ Params: N = 250 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.9150333404541 | Max Price: 27.576446533203125
+ Params: N = 280 | d = 1 | type of data: dm| Becker Hist Avg price = 19.92549705505371 | Max Price: 27.635175704956055
+ Params: N = 280 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.92549705505371 | Max Price: 27.635175704956055
+ Params: N = 310 | d = 1 | type of data: dm| Becker Hist Avg price = 19.93533706665039 | Max Price: 27.677724838256836
+ Params: N = 310 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.93533706665039 | Max Price: 27.677724838256836
+ Params: N = 340 | d = 1 | type of data: dm| Becker Hist Avg price = 19.938074111938477 | Max Price: 27.702199935913086
+ Params: N = 340 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.938074111938477 | Max Price: 27.702199935913086
+ Params: N = 370 | d = 1 | type of data: dm| Becker Hist Avg price = 19.94293975830078 | Max Price: 27.730409622192383
+ Params: N = 370 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.942955017089844 | Max Price: 27.730409622192383
+ Params: N = 400 | d = 1 | type of data: dm| Becker Hist Avg price = 19.948217391967773 | Max Price: 27.755268096923828
+ Params: N = 400 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.948217391967773 | Max Price: 27.755268096923828
+ Params: N = 430 | d = 1 | type of data: dm| Becker Hist Avg price = 19.950395584106445 | Max Price: 27.778406143188477
+ Params: N = 430 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.950395584106445 | Max Price: 27.778406143188477
+ Params: N = 460 | d = 1 | type of data: dm| Becker Hist Avg price = 19.956274032592773 | Max Price: 27.817218780517578
+ Params: N = 460 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.956274032592773 | Max Price: 27.817218780517578
+ Params: N = 490 | d = 1 | type of data: dm| Becker Hist Avg price = 19.95789337158203 | Max Price: 27.83745002746582
+ Params: N = 490 | d = 1 | type of data: dm| Becker/Ours CNN Avg price = 19.957889556884766 | Max Price: 27.83745002746582
+ Params: N = 10 | d = 1 | type of data: harmonic| Becker Hist Avg price = 44.57223129272461 | Max Price: 80.47518157958984
+ Params: N = 10 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 44.77568054199219 | Max Price: 80.70466613769531
+ Params: N = 40 | d = 1 | type of data: harmonic| Becker Hist Avg price = 92.08624267578125 | Max Price: 203.6919403076172
+ Params: N = 40 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 80.0925064086914 | Max Price: 203.6715087890625
+ Params: N = 70 | d = 1 | type of data: harmonic| Becker Hist Avg price = 63.69791793823242 | Max Price: 310.1900329589844
+ Params: N = 10 | d = 1 | type of data: fbm| Becker Hist Avg price = 11.633015632629395 | Max Price: 13.411791801452637
+ Params: N = 70 | d = 1 | type of data: harmonic| Becker/Ours CNN Avg price = 108.01630401611328 | Max Price: 309.50567626953125
+ Params: N = 100 | d = 1 | type of data: harmonic| Becker Hist Avg price = 74.03733825683594 | Max Price: 409.99993896484375
