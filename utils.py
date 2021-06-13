@@ -94,3 +94,18 @@ def calculate_sigma(path,file):
     returns = np.std(df['Close'])/np.mean(df['Close'])
     #return np.std(df['Close'])
     return returns
+
+def generate_avg_payoff_step(output_hist,p_,batch_size):
+    output_hist.insert(0,torch.ones((batch_size,1)).to(device))
+    array_outputs = torch.squeeze(torch.stack(output_hist),2).cpu().detach().numpy()
+    positions = np.argmax(np.where(np.flip(array_outputs,0)>0,True,False),0)
+    payoff = torch.squeeze(p_,1).cpu().detach().numpy()
+    df_posi_payoff = pd.DataFrame({'position':positions,'payoffs':payoff[range(0,len(payoff)),positions]})
+    return df_posi_payoff
+
+def save_exer_region(df_posi_payoff,N,model_name):
+        diff = np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))
+        zeros = np.zeros(len(np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))))
+        df_posi_payoff_zeros = pd.DataFrame({'position':diff,'payoffs':zeros})
+        df_posi_payoff = df_posi_payoff.append(df_posi_payoff_zeros)
+        np.save('Results\exerc_region_N_'+str(N)+'_'+model_name+'.npy',df_posi_payoff.groupby('position').mean().to_numpy().T)

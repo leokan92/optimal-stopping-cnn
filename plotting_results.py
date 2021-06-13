@@ -10,6 +10,12 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
+##########################################################################
+# Functions for plotting
+##########################################################################
+
+
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'valid') / w
 def convert_array_tensor(arr):
@@ -18,8 +24,8 @@ def convert_array_tensor(arr):
         list_arr.append(i.item())
     return np.asarray(list_arr)
 
-def return_series(file_name,n_series):
-    results = pd.read_csv('Results\\HARM\\'+file_name, delimiter = ";", header=None)
+def return_series(file_name,n_series,path):
+    results = pd.read_csv(path+file_name, delimiter = ";", header=None)
     results.columns = ['N','Payoff','Max Payoff','Payoff Std']
     series_payoff = []
     series_max_payoff = []
@@ -30,28 +36,89 @@ def return_series(file_name,n_series):
         series_std_payoff.append(results.iloc[i:][results.iloc[i:].reset_index().index % n_series == 0]['Payoff Std'])
     return series_payoff,series_max_payoff,series_std_payoff
 
-file_name = 'harm_2000_50.txt'
-number_of_models = 2
-results = pd.read_csv('Results\\HARM\\'+file_name, delimiter = ";", header=None)
+def create_dataframe_two_models(path,model_names,N_series):
+    df_results = pd.DataFrame(columns= ['Models','N','Payoff'])
+    for model in model_names:
+        for N in N_series:
+            payoffs = np.load(path+model+'_'+N+'.npy',allow_pickle=True)
+            payoffs = convert_array_tensor(payoffs)
+            df_temp = pd.DataFrame({'Models':[model]*len(payoffs),'N':[N]*len(payoffs),'Average Payoff':payoffs})
+            df_results = df_results.append(df_temp)
+            df_results['Models'].replace('BeckeH','Becker', inplace=True)
+            df_results['Models'].replace('Becker_cnn','CNN', inplace=True)
+    return df_results
+
+
+
+#############################################################################
+# Plotting the Avg Pay with standar deviation for each N on Brownian motion:
+############################################################################# 
+
+
+path = 'Results/BROWNIAN/'
+file_name = 'brownian_results.txt'
+model_names = 'BeckeH', 'Becker_cnn'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
 results.columns = ['N','Payoff','Max Payoff','Payoff Std']
 
-payoff,max_payoff,std_payoff = return_series(file_name,number_of_models)
+N_series = results.N.values.astype(str)
+
+df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
+
+
+f = plt.figure(figsize=(15,5))
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+# pallet options: Set1
+f.savefig('brownian_results.pdf', bbox_inches='tight')
+
+#################################################################################
+# Plotting the Avg Pay with standar deviation for each N on Harmonic time-series:
+################################################################################# 
+
+
+path = 'Results/HARM/'
+file_name = 'harmonic_results.txt'
+model_names = 'BeckeH', 'Becker_cnn'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = results.N.values.astype(str)
+
+df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
+
+temp = df_for_seaborn.loc[df_for_seaborn['Models']=='Becker']
+temp.loc[temp['N']=='10'].std()
+temp.loc[temp['N']=='10'].mean()
+
+f = plt.figure(figsize=(15,5))
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+#sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
+# pallet options: Set1
+f.savefig('harmonic_results.pdf', bbox_inches='tight')
+
+
+
+
+##########################################################################
+# Plotting the Avg Pay for each N on Brownian motion:
+##########################################################################    
+
+path = 'Results/BROWNIAN/'
+
+number_of_models = 2
+MA_steps = 1
+
+
+payoff,max_payoff,std_payoff = return_series(file_name,number_of_models,path)
 #models_names = ['Becker','Becker return', 'CNN return']
 models_names = ['Becker', 'CNN']
 N_series = results[results.reset_index().index % number_of_models == 0]['N']
 
 
-#To append new results:
-# file_name = 'table_10.txt'
-# results_2 = pd.read_csv('Results\\'+file_name, delimiter = ";", header=None)
-# payoff.append(results_2[1])
-# models_names.append('CNN_less neurons')
-#max_payoff.append(results_2[2])
 
-
-MA_steps = 3
-
-plt.figure(figsize=(15,5))
+f = plt.figure(figsize=(15,5))
 for line in payoff:
     if MA_steps<2:
         plt.plot(N_series,line)
@@ -62,49 +129,8 @@ plt.xlabel('Number of Bermudan steps (N)')
 plt.ylabel('Average payoff')
 plt.legend(models_names)
 plt.show()
+f.savefig('brownian_results.pdf', bbox_inches='tight')
 
-for line in std_payoff:
-    plt.plot(N_series,line)
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Std payoff')
-plt.legend(models_names)
-plt.show()
-
-mean = (np.asarray(payoff[number_of_models-1])-np.asarray(payoff[0]))/np.asarray(payoff[number_of_models-1])*100
-
-plt.plot(N_series,mean)
-plt.axhline(y=0, color='r', linestyle='-')
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Diff CNN and Becker Payoff')
-plt.legend(['CNN percentual increase','Zero line'])
-plt.show()
-
-
-std = 100*(np.asarray(std_payoff[number_of_models-1])+np.asarray(std_payoff[0]))/np.asarray(payoff[number_of_models-1])+ 100*np.asarray(std_payoff[number_of_models-1])/(np.asarray(payoff[0])+np.asarray(payoff[number_of_models-1]))
-
-       
-plt.plot(N_series,(std))
-plt.axhline(y=0, color='r', linestyle='-')
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Diff CNN and Becker Std dev')
-plt.legend(['CNN percentual increase','Zero line'])
-plt.show()
-
-
-plt.errorbar(range(0,len(mean)), mean, std, fmt='-o')
-plt.show()
-
-
-plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2])))
-plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2]))+np.asarray(std_payoff[2])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2]))-np.asarray(std_payoff[2])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2]))+np.asarray(std_payoff[0])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2]))-np.asarray(std_payoff[0])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2])))
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Diff CNN and Becker Std dev')
-plt.legend(['CNN percentual increase'])
-plt.show()
 
 
 #################################################################################
@@ -260,5 +286,51 @@ plt.show()
 
 
 
+"""
+for line in std_payoff:
+    plt.plot(N_series,line)
+plt.xlabel('Number of Bermudan steps (N)')
+plt.ylabel('Std payoff')
+plt.legend(models_names)
+plt.show()
+
+mean = (np.asarray(payoff[number_of_models-1])-np.asarray(payoff[0]))/np.asarray(payoff[number_of_models-1])*100
+
+plt.plot(N_series,mean)
+plt.axhline(y=0, color='r', linestyle='-')
+plt.xlabel('Number of Bermudan steps (N)')
+plt.ylabel('Diff CNN and Becker Payoff')
+plt.legend(['CNN percentual increase','Zero line'])
+plt.show()
+
+
+std = 100*(np.asarray(std_payoff[number_of_models-1])+np.asarray(std_payoff[0]))/np.asarray(payoff[number_of_models-1])+ 100*np.asarray(std_payoff[number_of_models-1])/(np.asarray(payoff[0])+np.asarray(payoff[number_of_models-1]))
+
+       
+plt.plot(N_series,(std))
+plt.axhline(y=0, color='r', linestyle='-')
+plt.xlabel('Number of Bermudan steps (N)')
+plt.ylabel('Diff CNN and Becker Std dev')
+plt.legend(['CNN percentual increase','Zero line'])
+plt.show()
+
+
+plt.errorbar(range(0,len(mean)), mean, std, fmt='-o')
+plt.show()
+
+
+plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2])))
+plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2]))+np.asarray(std_payoff[2])/np.asarray(payoff[2]))
+plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2]))-np.asarray(std_payoff[2])/np.asarray(payoff[2]))
+plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2]))+np.asarray(std_payoff[0])/np.asarray(payoff[2]))
+plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2]))-np.asarray(std_payoff[0])/np.asarray(payoff[2]))
+plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2])))
+plt.xlabel('Number of Bermudan steps (N)')
+plt.ylabel('Diff CNN and Becker Std dev')
+plt.legend(['CNN percentual increase'])
+plt.show()
+
+
+"""
 
 
