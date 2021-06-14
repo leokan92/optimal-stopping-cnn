@@ -22,14 +22,13 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     
 def Becker_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
     
     neural_net = Neural_Net_NN(num_neurons,d+1).to(device)
-    
-    neural_net.load_state_dict(torch.load(PATH+'/best_model_becker.pt'))
+    neural_net.load_state_dict(torch.load(path_output+'/best_model_becker.pt'))
     neural_net.eval()  
     
     gen_func = choose_gen(type_of_data)
@@ -75,7 +74,7 @@ def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     
     neural_net = Neural_Net_NN(num_neurons,(d+1)*N).to(device)
     
-    neural_net.load_state_dict(torch.load(PATH+'/best_model_becker.pt'))
+    neural_net.load_state_dict(torch.load(path_output+'/best_model_becker.pt'))
     neural_net.train()  
     
     gen_func = choose_gen(type_of_data)
@@ -133,7 +132,7 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     
     neural_net = Neural_Net_NN(num_neurons,(d+1)*N).to(device)
     
-    neural_net.load_state_dict(torch.load(PATH+'/best_model_becker.pt'))
+    neural_net.load_state_dict(torch.load(path_output+'/best_model_becker.pt'))
     neural_net.train()  
     
     gen_func = choose_gen(type_of_data)
@@ -177,7 +176,7 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     px_mean_max = torch.mean(torch.stack(px_vec_max))
     px_mean = torch.mean(torch.stack(px_vec))
     px_std = torch.std(torch.stack(px_vec))
-    save_exer_region(df_posi_payoff,N,'becker')
+    save_exer_region(df_posi_payoff,N,'becker',path_output)
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker Hist Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
     write_table('becker',N,px_mean.item(),px_mean_max.item(),px_std.item())
@@ -197,7 +196,7 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     df_posi_payoff = pd.DataFrame(columns = ['position','payoffs'])
     neural_net = Neural_Net_CNN(num_neurons,d+1,N,2,batch_size).to(device)
     
-    neural_net.load_state_dict(torch.load(PATH+'/best_model_becker.pt'))
+    neural_net.load_state_dict(torch.load(path_output+'/best_model_becker.pt'))
     neural_net.eval()  
     
     gen_func = choose_gen(type_of_data)
@@ -252,7 +251,7 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     px_mean_max = torch.mean(torch.stack(px_vec_max))
     px_mean = torch.mean(torch.stack(px_vec))
     px_std = torch.std(torch.stack(px_vec))
-    save_exer_region(df_posi_payoff,N,'cnn')
+    save_exer_region(df_posi_payoff,N,'cnn',path_output)
     
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker/Ours CNN Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)

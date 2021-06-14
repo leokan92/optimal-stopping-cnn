@@ -132,7 +132,7 @@ f.savefig('harmonic_table.pdf', bbox_inches='tight')
 
 
 path = 'Results/FBM/'
-file_name = 'harmonic_results.txt'
+file_name = 'fbm_results.txt'
 model_names = 'BeckeH', 'Becker_cnn'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
@@ -151,7 +151,6 @@ sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style=
 #sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
 # pallet options: Set1
 f.savefig('fbm_table.pdf', bbox_inches='tight')
-
 
 
 ##########################################################################

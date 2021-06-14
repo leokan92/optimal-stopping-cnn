@@ -103,9 +103,9 @@ def generate_avg_payoff_step(output_hist,p_,batch_size):
     df_posi_payoff = pd.DataFrame({'position':positions,'payoffs':payoff[range(0,len(payoff)),positions]})
     return df_posi_payoff
 
-def save_exer_region(df_posi_payoff,N,model_name):
+def save_exer_region(df_posi_payoff,N,model_name,path_output):
     diff = np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))
     zeros = np.zeros(len(np.setdiff1d(np.arange(N),(df_posi_payoff.position.unique()))))
     df_posi_payoff_zeros = pd.DataFrame({'position':diff,'payoffs':zeros})
     df_posi_payoff = df_posi_payoff.append(df_posi_payoff_zeros)
-    np.save('Results\exerc_region_N_'+str(N)+'_'+model_name+'.npy',df_posi_payoff.groupby('position').mean().to_numpy().T)
+    np.save(path_output+'exerc_region_N_'+str(N)+'_'+model_name+'.npy',df_posi_payoff.groupby('position').mean().to_numpy().T)

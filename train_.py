@@ -22,7 +22,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def Becker_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path):
+                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output):
     
     neural_net = Neural_Net_NN(num_neurons,d+1).to(device)
     optimizer = torch.optim.Adam(neural_net.parameters(), lr=0.05)
@@ -61,7 +61,7 @@ def Becker_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
             if px_mean_batch.item()>max_px and px_mean_batch.item()<np.mean(px_hist[-10:-1])*1.30:
             #if np.mean(px_hist[-100:])>np.mean(px_hist[-500:]):
                 #print('Best Model Saved')
-                torch.save(neural_net.state_dict(), PATH+'/best_model_becker.pt')
+                torch.save(neural_net.state_dict(), path_output+'best_model_becker.pt')
         
         
         if train_step%100 == 0 or train_step <100:
@@ -119,7 +119,7 @@ def BeckerH_r_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_dat
             if px_mean_batch.item()>max_px and px_mean_batch.item()<np.mean(px_hist[-10:-1])*1.30:
             #if np.mean(px_hist[-100:])>np.mean(px_hist[-500:]):
                 #print('Best Model Saved')
-                torch.save(neural_net.state_dict(), PATH+'/best_model_becker.pt')
+                torch.save(neural_net.state_dict(), path_output+'best_model_becker.pt')
         
         
         if train_step%100 == 0 or train_step <100:
@@ -176,7 +176,7 @@ def BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
             if px_mean_batch.item()>max_px and px_mean_batch.item()<np.mean(px_hist[-10:-1])*1.30:
             #if np.mean(px_hist[-100:])>np.mean(px_hist[-500:]):
                 #print('Best Model Saved')
-                torch.save(neural_net.state_dict(), PATH+'/best_model_becker.pt')
+                torch.save(neural_net.state_dict(), path_output+'best_model_becker.pt')
         
         
         if train_step%100 == 0 or train_step <100:
@@ -244,7 +244,7 @@ def Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_o
             if px_mean_batch.item()>max_px and px_mean_batch.item()<np.mean(px_hist[-10:-1])*1.70:
             #if np.mean(px_hist[-100:])>np.mean(px_hist[-500:]):
                 #print('Best Model Saved')
-                torch.save(neural_net.state_dict(), PATH+'/best_model_becker.pt')
+                torch.save(neural_net.state_dict(), path_output+'best_model_becker.pt')
         
         if train_step%100 == 0 or train_step <100:
             print('| Train step: {:5.0f} | Loss: {:3.3f} | Avg price: {:3.3f} | Lr: {:1.6f} |'.format(train_step,loss.item(),px_mean_batch.item(),optimizer.param_groups[0]['lr']))
@@ -331,7 +331,7 @@ def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type
             if px_hist_val[-1]>max_px and px_hist_val[-1]<np.mean(px_hist_val[-5:-1])*1.70:
             #if np.mean(px_hist[-100:])>np.mean(px_hist[-500:]):
                 #print('Best Model Saved')
-                torch.save(neural_net.state_dict(), PATH+'/best_model_becker.pt')
+                torch.save(neural_net.state_dict(), path_output+'best_model_becker.pt')
         
         if train_step%100 == 0 or train_step <100:
             print('| Train step: {:5.0f} | Loss: {:3.3f} | Avg price Train: {:3.3f} | Avg price Val: {:3.3f} | Lr: {:1.6f} |'.format(train_step,loss.item(),px_hist[-1],px_hist_val[-1],optimizer.param_groups[0]['lr']))
