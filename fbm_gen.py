@@ -23,6 +23,10 @@ def FBM_sample(S0,K,N,d,batch_size):
             assets_eval.append(S0*fbm_sample)
         batch_sample.append(assets_eval)
     return np.asarray(batch_sample)
+S0 = 100
+f = FBM(n=300, hurst=0.7, length=1, method='cholesky')
+fbm_sample = f.fbm()
+series = S0+S0*fbm_sample
 
 
 FBM_sample(100,100,50,2,8192)

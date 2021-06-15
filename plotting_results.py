@@ -56,7 +56,7 @@ def create_dataframe_two_models(path,model_names,N_series):
 
 
 path = 'Results/BROWNIAN/'
-file_name = 'brownian_results.txt'
+file_name = 'table_beckerdm.txt'
 model_names = 'BeckeH', 'Becker_cnn'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
@@ -84,7 +84,7 @@ model_names = 'BeckeH', 'Becker_cnn'
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
 results.columns = ['N','Payoff','Max Payoff','Payoff Std']
 
-N_series = results.N.values.astype(str)
+N_series = np.unique(results.N.values).astype(str)
 
 df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
 
@@ -104,41 +104,15 @@ f.savefig('harmonic_results.pdf', bbox_inches='tight')
 ######################################################################################################## 
 
 
-path = 'Results/HARM/'
-file_name = 'harmonic_results.txt'
-model_names = 'BeckeH', 'Becker_cnn'
-
-results = pd.read_csv(path+file_name, delimiter = ";", header=None)
-results.columns = ['N','Payoff','Max Payoff','Payoff Std']
-
-N_series = results.N.values.astype(str)
-
-df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
-
-temp = df_for_seaborn.loc[df_for_seaborn['Models']=='Becker']
-temp.loc[temp['N']=='10'].std()
-temp.loc[temp['N']=='10'].mean()
-
-f = plt.figure(figsize=(15,5))
-sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
-#sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
-# pallet options: Set1
-f.savefig('harmonic_table.pdf', bbox_inches='tight')
-
-
-#################################################################################
-# Plotting the Avg Pay with standar deviation for each N on Harmonic time-series:
-################################################################################# 
-
 
 path = 'Results/FBM/'
-file_name = 'fbm_results.txt'
+file_name = 'brownian_results.txt'
 model_names = 'BeckeH', 'Becker_cnn'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
 results.columns = ['N','Payoff','Max Payoff','Payoff Std']
 
-N_series = results.N.values.astype(str)
+N_series = np.unique(results.N.values).astype(str)
 
 df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
 
@@ -153,35 +127,87 @@ sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style=
 f.savefig('fbm_table.pdf', bbox_inches='tight')
 
 
-##########################################################################
-# Plotting the Avg Pay for each N on Brownian motion:
-##########################################################################    
-
-path = 'Results/BROWNIAN/'
-
-number_of_models = 2
-MA_steps = 1
+#################################################################################
+# Plotting the exercise region
+#################################################################################
 
 
-payoff,max_payoff,std_payoff = return_series(file_name,number_of_models,path)
-#models_names = ['Becker','Becker return', 'CNN return']
-models_names = ['Becker', 'CNN']
-N_series = results[results.reset_index().index % number_of_models == 0]['N']
+path = 'Results/HARM/'
+file_name = 'harmonic_results.txt'
+
+# path = 'Results/BROWNIAN/'
+# file_name = 'table_beckerdm.txt'
+
+model_names = 'BeckeH', 'Becker_cnn'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = np.unique(results.N.values.astype(str))
+
+models = ['becker','cnn']
+
+model_name = models[1] # We use the first value for test
+
+N_test = ['190','280']
+
+for N in N_test:
+    avg_payoff = np.squeeze(np.load(path+'exerc_region_N_'+N+'_'+model_name+'.npy'),0)
+    time_steps = np.arange(0,len(avg_payoff))
+    
+    MA_param = 3
+    avg_payoff = moving_average(avg_payoff, MA_param)
+    #avg_payoff = np.flip(avg_payoff)
+    time_steps = time_steps[:-MA_param+1]
+    
+    
+    
+    plt.plot(time_steps, avg_payoff, lw=1,color = 'gray')
+    d = np.zeros(len(avg_payoff))
+    #d = np.ones(len(avg_payoff))*max(avg_payoff)
+    plt.fill_between(time_steps, avg_payoff, where=avg_payoff>=d, interpolate=True, color='gray', alpha=0.30)
+    plt.show()
+# ax.fill_between(time_steps, avg_payoff, where=avg_payoff>=d, interpolate=True, color='blue')
+# ax.fill_between(time_steps, avg_payoff, where=avg_payoff<=d, interpolate=True, color='red')
 
 
+#################################################################################
+# Plotting the training evolution
+#################################################################################
 
-f = plt.figure(figsize=(15,5))
-for line in payoff:
-    if MA_steps<2:
-        plt.plot(N_series,line)
-    else:
-        plt.plot(N_series[:-(MA_steps-1)],moving_average(line.values, MA_steps))  
-plt.title('Evolution of the average payoff by the number of Bermudan Steps|MA('+str(MA_steps)+')')
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Average payoff')
-plt.legend(models_names)
-plt.show()
-f.savefig('brownian_results.pdf', bbox_inches='tight')
+# path = 'Results/BROWNIAN/'
+# file_name = 'brownian_results.txt'
+
+path = 'Results/HARM/'
+file_name = 'harmonic_results.txt'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = results.N.values.astype(str)
+
+models = ['Becker_cnn_train_','Becker_train_']
+
+N = N_series[30] # We use the first value for test
+
+N_test = ['100','280','490']
+
+MA_param = 50
+d = np.zeros(len(avg_payoff))
+fig = plt.figure(figsize=(15,5))
+t = 2
+for N in N_test:
+    avg_payoff_cnn = np.load(path + 'Becker_cnn_train_'+N+'.npy')
+    avg_payoff_becker = np.load(path + 'Becker_train_'+N+'.npy')
+    time_steps = np.arange(0,len(avg_payoff_cnn))
+    t = t-2.0/len(N_test)
+    plt.plot(time_steps[:-MA_param+1], moving_average(avg_payoff_cnn,MA_param),color = (t/2.0, t/2.0, t/2.0),linestyle='--',label = N+' CNN')
+    plt.plot(time_steps[:-MA_param+1], moving_average(avg_payoff_becker,MA_param),color = (t/2.0, t/2.0, t/2.0),label = N+' Becker')
+plt.legend(loc='upper right')
+plt.xlabel('Epochs')
+plt.ylabel('Average Payoff')
+plt.savefig('training_harmonic.pdf', bbox_inches='tight')
+
 
 
 
@@ -384,5 +410,4 @@ plt.show()
 
 
 """
-
 

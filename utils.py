@@ -80,8 +80,8 @@ def write_file(text):
     f.write(text)
     f.close()
     
-def write_table(model_name,N,P,max_P,std_P):
-    f = open('table+'+model_name+'.txt', 'a')
+def write_table(model_name,path,N,P,max_P,std_P):
+    f = open(path+'table_'+model_name+'.txt', 'a')
     text = str(N)+';'+str(P)+';'+str(max_P)+';'+str(std_P)+'\n'
     f.write(text)
     f.close()

@@ -64,12 +64,12 @@ def AR_sample(S0,K,N,d,batch_size):
 
 def FBM_sample(S0,K,N,d,batch_size):
     num_cores = multiprocessing.cpu_count()
-    f = FBM(n=N-1, hurst=.70, method='cholesky')
+    f = FBM(n=N-1, hurst=.7, length=1, method='cholesky')
     def FBM_sample_in(S0,K,N,d,i):
         assets_eval = []
         for j in range(0,d):
             fbm_sample = f.fbm()
-            assets_eval.append(S0*fbm_sample)
+            assets_eval.append(S0+S0*fbm_sample)
         return assets_eval
     results = Parallel(n_jobs=num_cores)(delayed(FBM_sample_in)(S0,K,N,d,i) for i in range(0,batch_size))
     return np.asarray(results)
