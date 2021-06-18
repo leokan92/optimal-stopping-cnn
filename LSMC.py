@@ -42,7 +42,7 @@ class AmericanOptionsLSMC(object):
     4.4731177017712209
     """
 
-    def __init__(self, option_type, S0, strike, T, M, r, div, sigma, simulations,path_type):
+    def __init__(self, option_type, S0, strike, T, M, r, div, sigma, simulations,path_type,mode):
         try:
             self.option_type = option_type
             assert isinstance(option_type, str)
@@ -61,6 +61,7 @@ class AmericanOptionsLSMC(object):
             assert simulations > 0
             self.simulations = int(simulations)
             self.path_type = path_type
+            self.mode = mode
         except ValueError:
             print('Error passing Options parameters')
 
@@ -141,22 +142,40 @@ class AmericanOptionsLSMC(object):
                             dtype=np.float64))
         return payoff
 
-    def value_vector(self):
-        value_matrix = np.zeros_like(self.MCpayoff())
-        value_matrix[-1, :] = self.MCpayoff()[-1, :]
-        for t in range(self.M - 1, 0 , -1):
-            regression = np.polyfit(self.MCprice_matrix()[t, :], value_matrix[t + 1, :] * self.discount, 5)
-            continuation_value = np.polyval(regression, self.MCprice_matrix()[t, :])
-            value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
-                                          self.MCpayoff()[t, :],
-                                          value_matrix[t + 1, :] * self.discount)
-        px_vec = value_matrix[1,:] * self.discount
-        np.save('Results/'+'LSMC_'+str(self.M),np.asarray(px_vec))
-        
-        return value_matrix[1,:] * self.discount
+    def value_vector(self,mode):
+        if mode == 'train':
+            value_matrix = np.zeros_like(self.MCpayoff())
+            value_matrix[-1, :] = self.MCpayoff()[-1, :]
+            list_of_regressor = []
+            for t in range(self.M - 1, 0 , -1):
+                regression = np.polyfit(self.MCprice_matrix()[t, :], value_matrix[t + 1, :] * self.discount, 5)
+                list_of_regressor.append(regression)
+                continuation_value = np.polyval(regression, self.MCprice_matrix()[t, :])
+                value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
+                                              self.MCpayoff()[t, :],
+                                              value_matrix[t + 1, :] * self.discount)
+            np.save('list_of_poly.npy',list_of_regressor)
+            px_vec = value_matrix[1,:] * self.discount
+            np.save('Results/Energy/'+'LSMC_'+str(self.M),np.asarray(px_vec))
+            return value_matrix[1,:] * self.discount
+        if mode == 'test':
+            value_matrix = np.zeros_like(self.MCpayoff())
+            value_matrix[-1, :] = self.MCpayoff()[-1, :]
+            list_of_regressor = np.load('list_of_poly.npy',allow_pickle=True).reverse()
+            for t in range(self.M - 1, 0 , -1):
+                #regression = np.polyfit(self.MCprice_matrix()[t, :], value_matrix[t + 1, :] * self.discount, 5)
+                #list_of_regressor.append(regression)
+                regression = list_of_regressor[t-1]
+                continuation_value = np.polyval(regression, self.MCprice_matrix()[t, :])
+                value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
+                                              self.MCpayoff()[t, :],
+                                              value_matrix[t + 1, :] * self.discount)
+            np.save(list_of_regressor,'list_of_poly.npy')
+            px_vec = value_matrix[1,:] * self.discount
+            np.save('Results/Energy/'+'LSMC_'+str(self.M),np.asarray(px_vec))
+    
 
-
-    def price(self): return np.sum(self.value_vector()) / float(self.simulations)
+    def price(self): return np.sum(self.value_vector(self.mode)) / float(self.simulations)
     
     def delta(self):
         diff = self.S0 * 0.01

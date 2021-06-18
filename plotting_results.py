@@ -106,7 +106,7 @@ f.savefig('harmonic_results.pdf', bbox_inches='tight')
 
 
 path = 'Results/FBM/'
-file_name = 'brownian_results.txt'
+file_name = 'table_beckerfbm.txt'
 model_names = 'BeckeH', 'Becker_cnn'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
@@ -121,10 +121,10 @@ temp.loc[temp['N']=='10'].std()
 temp.loc[temp['N']=='10'].mean()
 
 f = plt.figure(figsize=(15,5))
-sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary')
 #sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
 # pallet options: Set1
-f.savefig('fbm_table.pdf', bbox_inches='tight')
+f.savefig('fbm_results.pdf', bbox_inches='tight')
 
 
 #################################################################################
@@ -207,6 +207,40 @@ plt.legend(loc='upper right')
 plt.xlabel('Epochs')
 plt.ylabel('Average Payoff')
 plt.savefig('training_harmonic.pdf', bbox_inches='tight')
+
+#################################################################################
+# Plotting the training evolution
+#################################################################################
+
+path = 'Results/FBM/'
+file_name = 'table_beckerfbm.txt'
+
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = results.N.values.astype(str)
+
+models = ['Becker_cnn_train_','Becker_train_']
+N_test = ['100','280','490']
+#N_test = ['280']
+
+MA_param = 50
+#d = np.zeros(len(avg_payoff))
+fig = plt.figure(figsize=(15,5))
+t = 2
+for N in N_test:
+    avg_payoff_cnn = np.load(path + 'Becker_cnn_train_'+N+'.npy')
+    avg_payoff_becker = np.load(path + 'Becker_train_'+N+'.npy')
+    time_steps = np.arange(0,len(avg_payoff_cnn))
+    t = t-2.0/len(N_test)
+    plt.plot(time_steps[:-MA_param+1], moving_average(avg_payoff_cnn,MA_param),color = (t/2.0, t/2.0, t/2.0),linestyle='--',label = N+' CNN')
+    plt.plot(time_steps[:-MA_param+1], moving_average(avg_payoff_becker,MA_param),color = (t/2.0, t/2.0, t/2.0),label = N+' Becker')
+plt.legend(loc='upper right')
+plt.xlabel('Epochs')
+plt.ylabel('Average Payoff')
+plt.savefig('training_fbm.pdf', bbox_inches='tight')
+
 
 
 
