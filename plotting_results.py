@@ -46,6 +46,7 @@ def create_dataframe_two_models(path,model_names,N_series):
             df_results = df_results.append(df_temp)
             df_results['Models'].replace('BeckeH','Becker', inplace=True)
             df_results['Models'].replace('Becker_cnn','CNN', inplace=True)
+            df_results['Models'].replace('Max_dist','Max Avg Payoff', inplace=True)
     return df_results
 
 
@@ -57,7 +58,7 @@ def create_dataframe_two_models(path,model_names,N_series):
 
 path = 'Results/BROWNIAN/'
 file_name = 'table_beckerdm.txt'
-model_names = 'BeckeH', 'Becker_cnn'
+model_names = 'BeckeH', 'Becker_cnn','Max_dist'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
 results.columns = ['N','Payoff','Max Payoff','Payoff Std']
@@ -128,7 +129,7 @@ f.savefig('fbm_results.pdf', bbox_inches='tight')
 
 
 #################################################################################
-# Plotting the exercise region
+# Plotting the average payoff on each decision point
 #################################################################################
 
 
@@ -172,7 +173,7 @@ for N in N_test:
 
 
 #################################################################################
-# Plotting the training evolution
+# Plotting the training evolution for harmonic time-series
 #################################################################################
 
 # path = 'Results/BROWNIAN/'
@@ -209,7 +210,7 @@ plt.ylabel('Average Payoff')
 plt.savefig('training_harmonic.pdf', bbox_inches='tight')
 
 #################################################################################
-# Plotting the training evolution
+# Plotting the training evolution for FBM
 #################################################################################
 
 path = 'Results/FBM/'
@@ -242,6 +243,28 @@ plt.ylabel('Average Payoff')
 plt.savefig('training_fbm.pdf', bbox_inches='tight')
 
 
+########################################################################################################
+# Plotting the Avg Pay with standard deviation for each N real-word data (crude oil)
+######################################################################################################## 
+
+
+
+path = 'Results/Energy/'
+file_name = 'table_cnnreal_val.txt'
+model_names = 'Becker_cnn', 'LSMC','Max_dist'
+
+results = pd.read_csv(path+file_name, delimiter = ";", header=None)
+results.columns = ['N','Payoff','Max Payoff','Payoff Std']
+
+N_series = np.unique(results.N.values).astype(str)[:-1]
+
+df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
+
+f = plt.figure(figsize=(15,5))
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+#sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
+# pallet options: Set1
+f.savefig('energy_results.pdf', bbox_inches='tight')
 
 
 
