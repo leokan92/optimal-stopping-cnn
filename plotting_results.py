@@ -42,7 +42,7 @@ def create_dataframe_two_models(path,model_names,N_series):
         for N in N_series:
             payoffs = np.load(path+model+'_'+N+'.npy',allow_pickle=True)
             payoffs = convert_array_tensor(payoffs)
-            df_temp = pd.DataFrame({'Models':[model]*len(payoffs),'N':[N]*len(payoffs),'Average Payoff':payoffs})
+            df_temp = pd.DataFrame({'Models':[model]*len(payoffs),'N':[N]*len(payoffs),'Expected Payoff':payoffs})
             df_results = df_results.append(df_temp)
             df_results['Models'].replace('BeckeH','Becker', inplace=True)
             df_results['Models'].replace('Becker_cnn','CNN', inplace=True)
@@ -261,7 +261,7 @@ N_series = np.unique(results.N.values).astype(str)[:-1]
 df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
 
 f = plt.figure(figsize=(15,5))
-sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+sns.lineplot(data=df_for_seaborn, x="N", y="Expected Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
 #sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
 # pallet options: Set1
 f.savefig('energy_results.pdf', bbox_inches='tight')

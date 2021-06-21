@@ -604,3 +604,31 @@
  Params: N = 250 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 12.93614673614502 | Max Price: 22.348079681396484
  Params: N = 10 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 2.5936050415039062 | Max Price: 3.8925588130950928
  Params: N = 40 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 5.798638343811035 | Max Price: 9.540019035339355
+ Params: N = 70 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 8.513540267944336 | Max Price: 13.288946151733398
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 9.864311218261719 | Max Price: 15.899497032165527
+ Params: N = 130 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 10.220881462097168 | Max Price: 17.614065170288086
+ Params: N = 160 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 10.209680557250977 | Max Price: 18.776472091674805
+ Params: N = 190 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 11.620190620422363 | Max Price: 20.201377868652344
+ Params: N = 220 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 12.297656059265137 | Max Price: 21.768234252929688
+ Params: N = 250 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 12.96635627746582 | Max Price: 22.34779930114746
+ Params: N = 280 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 10.193892478942871 | Max Price: 20.22863006591797
+ Params: N = 310 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 8.537766456604004 | Max Price: 19.69159698486328
+ Params: N = 340 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 8.868825912475586 | Max Price: 20.693510055541992
+ Params: N = 370 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 9.363449096679688 | Max Price: 21.835975646972656
+ Params: N = 400 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 9.910993576049805 | Max Price: 22.925325393676758
+ Params: N = 430 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 10.351917266845703 | Max Price: 24.039005279541016
+ Params: N = 460 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 11.273767471313477 | Max Price: 25.214052200317383
+ Params: N = 490 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 12.204415321350098 | Max Price: 26.532323837280273
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.056694984436035 | Max Price: 5.526442050933838
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.0710856914520264 | Max Price: 5.537624835968018
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.066410779953003 | Max Price: 5.537082195281982
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.068578004837036 | Max Price: 5.530551433563232
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.0683887004852295 | Max Price: 5.544548988342285
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.3649821281433105 | Max Price: 6.868290424346924
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.534662961959839 | Max Price: 7.109134674072266
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 6.7068352699279785 | Max Price: 11.656970977783203
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 6.087926387786865 | Max Price: 12.854354858398438
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 4.979260444641113 | Max Price: 12.135801315307617
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 9.659686088562012 | Max Price: 15.785178184509277
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 7.14299201965332 | Max Price: 12.44892406463623
+ Params: N = 100 | d = 1 | type of data: real_val| Becker/Ours CNN Avg price = 3.9762654304504395 | Max Price: 9.136880874633789

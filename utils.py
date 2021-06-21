@@ -87,7 +87,8 @@ def write_table(model_name,path,N,P,max_P,std_P):
     f.close()
     
 def calculate_sigma(path,file):
-    df = pd.read_csv(path+file,sep=';',thousands=',')
+    #df = pd.read_csv(path+file,sep=';',thousands=',')
+    df = pd.read_csv(path+file,sep=',')
     #returns = df['Close']
     #returns = np.diff(df['Close'])  
     #returns = np.diff(df['Close'])/df['Close'][1:]

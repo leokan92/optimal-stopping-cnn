@@ -42,7 +42,7 @@ class AmericanOptionsLSMC(object):
     4.4731177017712209
     """
 
-    def __init__(self, option_type, S0, strike, T, M, r, div, sigma, simulations,path_type,mode):
+    def __init__(self, option_type, S0, strike, T, M, r, div, sigma, simulations,path_type,mode,file,path_output,asset):
         try:
             self.option_type = option_type
             assert isinstance(option_type, str)
@@ -62,6 +62,9 @@ class AmericanOptionsLSMC(object):
             self.simulations = int(simulations)
             self.path_type = path_type
             self.mode = mode
+            self.file = file
+            self.path_output = path_output
+            self.asset = asset
         except ValueError:
             print('Error passing Options parameters')
 
@@ -107,10 +110,9 @@ class AmericanOptionsLSMC(object):
             # MCprice_matrix = np.concatenate((np.expand_dims(self.S0*np.ones(self.simulations),0),(self.S0*np.cumprod(X[:,:self.M].T +1,0))),0)
         if self.path_type == 'real':
             path = r'C:\Users\leona\Google Drive\USP\Doutorado\PoliTO\Option Stopping\Codes\Implementation\optimal-stopping-cnn\Datasets'
-            file = r'\crudeoil_test.csv'
             num_cores = multiprocessing.cpu_count()
-            df = pd.read_csv(path+file,sep=';',thousands=',')
-            #df = pd.read_csv(path+file,sep=',')
+            #df = pd.read_csv(path+self.file,sep=';',thousands=',')
+            df = pd.read_csv(path+self.file,sep=',')
             returns = np.diff(df['Close']) / df['Close'][:-1]
             def rand_sample(i):
                 asset_list = []
@@ -154,14 +156,14 @@ class AmericanOptionsLSMC(object):
                 value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
                                               self.MCpayoff()[t, :],
                                               value_matrix[t + 1, :] * self.discount)
-            np.save('list_of_poly.npy',list_of_regressor)
+            np.save(self.path_output+'list_of_poly_'+str(self.M)+'.npy',list_of_regressor)
             px_vec = value_matrix[1,:] * self.discount
-            np.save('Results/Energy/'+'LSMC_'+str(self.M),np.asarray(px_vec))
+            np.save(self.path_output+'LSMC_train_'+str(self.M)+'_'+self.asset,np.asarray(px_vec))
             return value_matrix[1,:] * self.discount
         if mode == 'test':
             value_matrix = np.zeros_like(self.MCpayoff())
             value_matrix[-1, :] = self.MCpayoff()[-1, :]
-            list_of_regressor = np.load('list_of_poly.npy',allow_pickle=True).reverse()
+            list_of_regressor = np.flip(np.load(self.path_output+'list_of_poly_'+str(self.M)+'.npy',allow_pickle=True))
             for t in range(self.M - 1, 0 , -1):
                 #regression = np.polyfit(self.MCprice_matrix()[t, :], value_matrix[t + 1, :] * self.discount, 5)
                 #list_of_regressor.append(regression)
@@ -170,9 +172,10 @@ class AmericanOptionsLSMC(object):
                 value_matrix[t, :] = np.where(self.MCpayoff()[t, :] > continuation_value,
                                               self.MCpayoff()[t, :],
                                               value_matrix[t + 1, :] * self.discount)
-            np.save(list_of_regressor,'list_of_poly.npy')
+            #np.save(list_of_regressor,'list_of_poly.npy')
             px_vec = value_matrix[1,:] * self.discount
-            np.save('Results/Energy/'+'LSMC_'+str(self.M),np.asarray(px_vec))
+            np.save(self.path_output+'LSMC_test_'+str(self.M)+'_'+self.asset,np.asarray(px_vec))
+            return value_matrix[1,:] * self.discount
     
 
     def price(self): return np.sum(self.value_vector(self.mode)) / float(self.simulations)

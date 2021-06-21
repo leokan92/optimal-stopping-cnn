@@ -22,7 +22,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def Becker_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output,asset):
     
     neural_net = Neural_Net_NN(num_neurons,d+1).to(device)
     optimizer = torch.optim.Adam(neural_net.parameters(), lr=0.05)
@@ -72,7 +72,7 @@ def Becker_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
         scheduler.step()
 
 def BeckerH_r_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path):
+                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output,asset):
     
     neural_net = Neural_Net_NN(num_neurons,(d+1)*N).to(device)
     optimizer = torch.optim.Adam(neural_net.parameters(), lr=0.05)
@@ -131,7 +131,7 @@ def BeckerH_r_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_dat
 
         
 def BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output,asset):
     
     neural_net = Neural_Net_NN(num_neurons,(d+1)*N).to(device)
     optimizer = torch.optim.Adam(neural_net.parameters(), lr=0.05)
@@ -185,12 +185,12 @@ def BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
         loss.backward()
         optimizer.step()
         scheduler.step()
-    np.save(path_output+'Becker_train_'+str(N),np.asarray(px_hist))
+    np.save(path_output+'Becker_train_'+str(N)+'_'+asset,np.asarray(px_hist))
 
 
       
 def Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output,asset):
     
     
     neural_net = Neural_Net_CNN(num_neurons,d+1,N,2,batch_size).to(device)
@@ -252,10 +252,12 @@ def Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_o
         loss.backward()
         optimizer.step()
         scheduler.step()
-    np.save(path_output+'Becker_cnn_train_'+str(N),np.asarray(px_hist))
+    np.save(path_output+'Becker_cnn_train_'+str(N)+'_'+asset,np.asarray(px_hist))
+
+
 
 def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries,lr_init,training_steps,file,path,path_output,asset):
     
     
     neural_net = Neural_Net_CNN(num_neurons,d+1,N,2,batch_size).to(device)
@@ -339,6 +341,6 @@ def Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type
         loss.backward()
         optimizer.step()
         scheduler.step()
-    np.save(path_output+'Becker_cnn_train_'+str(N),np.asarray(px_hist))
-    np.save(path_output+'Becker_cnn_val_'+str(N),np.asarray(px_hist_val))
+    np.save(path_output+'Becker_cnn_train_'+str(N)+'_'+asset,np.asarray(px_hist))
+    np.save(path_output+'Becker_cnn_val_'+str(N)+'_'+asset,np.asarray(px_hist_val))
 

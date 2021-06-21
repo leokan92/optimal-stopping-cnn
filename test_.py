@@ -22,7 +22,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     
 def Becker_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output,asset):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -67,7 +67,7 @@ def Becker_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     torch.cuda.empty_cache()
 
 def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output,asset):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -124,7 +124,7 @@ def BeckeH_r_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
     torch.cuda.empty_cache()
     
 def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output,asset):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -189,7 +189,7 @@ def BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
 
 
 def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output):
+                     PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,train_steps,file,path,path_output,asset):
     print('\n\n Evaluation phase by Becker´s method:\n\n')
     px_vec = []
     px_vec_max = []
@@ -256,7 +256,7 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     text = '\n Params: N = '+str(N)+' | d = '+str(d)+' | type of data: '+type_of_data+'| Becker/Ours CNN Avg price = '+ str(px_mean.item())+' | Max Price: '+str(px_mean_max.item())
     write_file(text)
     write_table('cnn'+type_of_data,path_output,N,px_mean.item(),px_mean_max.item(),px_std.item())
-    np.save(path_output+'Becker_cnn_'+str(N),np.asarray(px_vec))
+    np.save(path_output+'Becker_cnn_'+str(N)+'_'+asset,np.asarray(px_vec))
     np.save(path_output+'Max_dist_'+str(N),np.asarray(px_vec_max))
     del neural_net
     torch.cuda.empty_cache()
