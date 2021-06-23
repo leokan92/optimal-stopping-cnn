@@ -30,20 +30,46 @@ df_train = pd.read_csv(root_path+symbol+'_train.csv')
 print('Test size:' +str(len(df_test)))
 print('Train size:' +str(len(df_train)))
 
-from scipy.stats import skew
-from scipy.stats import kurtosis
-test = df_test['Close'].pct_change()
+def convert_array_tensor(arr):
+    list_arr = []
+    for i in arr:
+        list_arr.append(i.item())
+    return np.asarray(list_arr)
 
-skew(test[1:])
+"""## Load the data from the tests"""
+
+N = 100
+path = '/content/gdrive/MyDrive/USP/Doutorado/PoliTO/Option Stopping/Codes/Implementation/optimal-stopping-cnn/Results/STOCKS/'
+#symbols_list_2 = ['BCE','VZ','T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI']
+becker_cnn_avg = []
+LSMC_avg = []
+MAX_avg = []
+becker_cnn_std = []
+LSMC_std = []
+MAX_std = []
+for asset in symbols_list:
+  becker_cnn = convert_array_tensor(np.load(path+'Becker_cnn_'+str(N)+'_'+asset+'.npy',allow_pickle=True))
+  LSMC = np.load(path+'LSMC_test_'+str(N)+'_'+asset+'.npy')
+  #MAX = convert_array_tensor(np.load(path+'Max_'+str(N)+'_'+asset+'.npy',allow_pickle=True))
+  becker_cnn_avg.append(np.mean(becker_cnn))
+  LSMC_avg.append(np.mean(LSMC))
+  becker_cnn_std.append(np.std(becker_cnn))
+  LSMC_std.append(np.std(LSMC))
+
+becker_cnn_avg
+
+
 
 """## Creating the dataframe that will became the table"""
 
-final_table = pd.DataFrame(columns = ['Economic Sector','Asset','Mean','Std','Skewness','Kurtosis','CNN Avg Payoff','LSMC Avg Payoff'])
+final_table = pd.DataFrame(columns = ['Economic Sector','Asset','Mean','Std','Skewness','Kurtosis','CNN Expected Payoff','LSMC Expected Payoff','CNN Payoff std','LSMC Payoff std'])
 
 final_table['Asset']=symbols_list
 final_table['Economic Sector'] = economic_sector
-
-final_table.head(3)
+final_table['CNN Expected Payoff'][:len(becker_cnn_avg)] = becker_cnn_avg
+final_table['LSMC Expected Payoff'][:len(becker_cnn_avg)] = LSMC_avg
+final_table['CNN Payoff std'][:len(becker_cnn_avg)] = becker_cnn_std
+final_table['LSMC Payoff std'][:len(becker_cnn_avg)] = LSMC_std
 
 from scipy.stats import skew
 from scipy.stats import kurtosis
@@ -58,10 +84,79 @@ for symbol in symbols_list:
   list_skewness.append(skew(pd.read_csv(root_path+symbol+'_test.csv')['Close'].pct_change()[1:]))
   list_kurtosis.append(kurtosis(pd.read_csv(root_path+symbol+'_test.csv')['Close'].pct_change()[1:]))
 final_table['Mean'] = list_means
+final_table['Mean'] = final_table['Mean'].map('{:.2e}'.format)
 final_table['Std'] = list_std
+final_table['Std'] = final_table['Std'].map('{:.2e}'.format)
 final_table['Skewness'] = list_skewness
+final_table['Skewness'] = final_table['Skewness'].map('{:.2f}'.format)
 final_table['Kurtosis'] = list_kurtosis
+final_table['Kurtosis'] = final_table['Kurtosis'].map('{:.2f}'.format)
+final_table['CNN Expected Payoff'] = final_table['CNN Expected Payoff'].map('{:.2f}'.format) 
+final_table['LSMC Expected Payoff'] = final_table['LSMC Expected Payoff'].map('{:.2f}'.format)
+final_table['CNN Payoff std'] = final_table['CNN Payoff std'].map('{:.2f}'.format) 
+final_table['LSMC Payoff std'] = final_table['LSMC Payoff std'].map('{:.2f}'.format)
+
+final_table['CNN Expected Payoff'] = final_table[['CNN Expected Payoff','CNN Payoff std']].agg('$\pm$'.join, axis=1)
+final_table['LSMC Expected Payoff'] = final_table[['LSMC Expected Payoff','LSMC Payoff std']].agg('$\pm$'.join, axis=1)
+
+final_table
 
 caption = 'Results with the returns statistics (mean, standard deviation, skewness, and kurtosis) and the respective results of our proposed model and the baseline (LSMC)'
-print(final_table.to_latex(index=False,float_format="%.4f",label = 'tab:assets_result',caption=caption))
+print(final_table.iloc[:,0:8].to_latex(index=False,label = 'tab:assets_result',caption=caption,escape = False))
+
+working_table = pd.DataFrame(columns = ['Economic Sector','Asset','Mean','Std','Skewness','Kurtosis','CNN Expected Payoff','LSMC Expected Payoff','CNN Payoff std','LSMC Payoff std'])
+working_table['Asset']=symbols_list
+working_table['Economic Sector'] = economic_sector
+working_table['CNN Expected Payoff'][:len(becker_cnn_avg)] = becker_cnn_avg
+working_table['LSMC Expected Payoff'][:len(becker_cnn_avg)] = LSMC_avg
+working_table['CNN Payoff std'][:len(becker_cnn_avg)] = becker_cnn_std
+working_table['LSMC Payoff std'][:len(becker_cnn_avg)] = LSMC_std
+working_table['Mean'] = list_means
+working_table['Std'] = list_std
+working_table['Skewness'] = list_skewness
+working_table['Kurtosis'] = list_kurtosis
+
+working_table = working_table.groupby('Economic Sector')['Economic Sector','Mean','Std','Skewness','Kurtosis','CNN Expected Payoff','LSMC Expected Payoff','CNN Payoff std','LSMC Payoff std'].agg(np.mean)
+working_table['Mean'] = working_table['Mean'].map('{:.2e}'.format)
+working_table['Std'] = working_table['Std'].map('{:.2e}'.format)
+working_table['Skewness'] = working_table['Skewness'].map('{:.2f}'.format)
+working_table['Kurtosis'] = working_table['Kurtosis'].map('{:.2f}'.format)
+working_table['CNN Expected Payoff'] = working_table['CNN Expected Payoff'].map('{:.2f}'.format) 
+working_table['LSMC Expected Payoff'] = working_table['LSMC Expected Payoff'].map('{:.2f}'.format)
+working_table['CNN Payoff std'] = working_table['CNN Payoff std'].map('{:.2f}'.format) 
+working_table['LSMC Payoff std'] = working_table['LSMC Payoff std'].map('{:.2f}'.format)
+working_table['CNN Expected Payoff'] = working_table[['CNN Expected Payoff','CNN Payoff std']].agg('$\pm$'.join, axis=1)
+working_table['LSMC Expected Payoff'] = working_table[['LSMC Expected Payoff','LSMC Payoff std']].agg('$\pm$'.join, axis=1)
+
+working_table['Economic Sector'] = working_table.index
+working_table = working_table[['Economic Sector','Mean','Std','Skewness','Kurtosis','CNN Expected Payoff','LSMC Expected Payoff','CNN Payoff std','LSMC Payoff std']]
+
+working_table
+
+caption = 'Results with the returns statistics (mean, standard deviation, skewness, and kurtosis) and the respective results of our proposed model and the baseline (LSMC) grouped by sector'
+print(working_table.iloc[:,0:7].to_latex(index=False,label = 'tab:sector_result',caption=caption,escape = False))
+
+"""## Plotting a 3D graph"""
+
+# Commented out IPython magic to ensure Python compatibility.
+from mpl_toolkits import mplot3d
+# %matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+x = list_skewness
+y = list_kurtosis
+z = becker_cnn_avg
+plt.figure(figsize=(15,10))
+ax = plt.axes(projection='3d')
+ax.scatter3D(x, y, z, c=z,s=10*20);
+ax.set_xlabel('Skewness')
+ax.set_ylabel('Kurtoisis')
+ax.set_zlabel('Expected Payoff')
+#plt.xlabel('Skewness')
+#plt.ylabel('Kurtoisis')
+#plt.zlabel('Expected Payoff')
+plt.show()
+
+ax = plt.axes(projection='3d')
+ax.plot_trisurf(x, y, z,cmap='viridis', edgecolor='none');
 

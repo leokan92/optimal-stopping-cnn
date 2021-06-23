@@ -120,15 +120,15 @@ for asset in asset_list:
                           PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output,asset)
     
     
-    file = '/'+asset+'_train.csv'
-    sigma_data = calculate_sigma(path,file)
-    sigma = sigma_data
-    path_type = 'real'
-    AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'train',file,path_output,asset)
-    print('Price: ', AmericanPUT.price())
-    file = '/'+asset+'_test.csv'
-    AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'test',file,path_output,asset)
-    print('Price: ', AmericanPUT.price())
+    # file = '/'+asset+'_train.csv'
+    # sigma_data = calculate_sigma(path,file)
+    # sigma = sigma_data
+    # path_type = 'real'
+    # AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'train',file,path_output,asset)
+    # print('Price: ', AmericanPUT.price())
+    # file = '/'+asset+'_test.csv'
+    # AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'test',file,path_output,asset)
+    # print('Price: ', AmericanPUT.price())
 
 
 
