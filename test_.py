@@ -197,7 +197,7 @@ def Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of
     df_posi_payoff = pd.DataFrame(columns = ['position','payoffs'])
     neural_net = Neural_Net_CNN(num_neurons,d+1,N,2,batch_size).to(device)
     
-    neural_net.load_state_dict(torch.load(path_output+'/best_model_becker.pt'))
+    neural_net.load_state_dict(torch.load(path_output+'/best_model_cnn.pt'))
     neural_net.eval()  
     
     gen_func = choose_gen(type_of_data)
