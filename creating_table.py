@@ -79,10 +79,10 @@ list_std = []
 list_skewness = []
 list_kurtosis = []
 for symbol in symbols_list:
-  list_means.append(np.mean(pd.read_csv(root_path+symbol+'_test.csv')['Close'].pct_change()[1:]))
-  list_std.append(np.std(pd.read_csv(root_path+symbol+'_test.csv')['Close'].pct_change()[1:]))
-  list_skewness.append(skew(pd.read_csv(root_path+symbol+'_test.csv')['Close'].pct_change()[1:]))
-  list_kurtosis.append(kurtosis(pd.read_csv(root_path+symbol+'_test.csv')['Close'].pct_change()[1:]))
+  list_means.append(np.mean(pd.read_csv(root_path+symbol+'_test.csv')['Close'][1:]))
+  list_std.append(np.std(pd.read_csv(root_path+symbol+'_test.csv')['Close'][1:]))
+  list_skewness.append(skew(pd.read_csv(root_path+symbol+'_test.csv')['Close'][1:]))
+  list_kurtosis.append(kurtosis(pd.read_csv(root_path+symbol+'_test.csv')['Close'][1:]))
 final_table['Mean'] = list_means
 final_table['Mean'] = final_table['Mean'].map('{:.2e}'.format)
 final_table['Std'] = list_std
