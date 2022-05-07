@@ -11,12 +11,12 @@ from torch import nn
 from train_ import Becker_train_model, BeckerH_train_model,BeckerH_r_train_model,Becker_mod_cnn_train_model
 from test_ import Becker_test_model,BeckeH_test_model,BeckeH_r_test_model,Becker_mod_cnn_test_model
 from utils import calculate_sigma
-#from LSMC import AmericanOptionsLSMC
+from LSMC import AmericanOptionsLSMC
 import os
 
 
 ################################################################################
-# Simulated path experiments:
+# Simulated path and crude oil experiments:
 ################################################################################
 
 PATH = os.getcwd()
@@ -53,113 +53,43 @@ for i in range(10,511,30):
     Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
                           PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output,asset)
 
-################################################################################
-# Real data experiments:
-################################################################################
 
-# num_neurons = 50
-# file = r'\crudeoil_train.csv'
-# #file = r'\SP500- daily - 30Y_train.csv'
-# Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                       PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file,path_output)
-# file = r'\crudeoil_test.csv'
-# #file = r'\SP500- daily - 30Y_test.csv'
-# Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                       PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output)
-
-  
-
-# file = r'\crudeoil_train.csv'  
-# sigma_data = calculate_sigma(path,file)
-# asset = 'crue_oil'
-# path_output = 'Results/Energy/'
-# for i in range(10,70,30):
-#     N = i
-    
-#     num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[100,200,300],0.05,500,2000
-    
-#     sigma = sigma_data
-#     num_neurons = 50
-    
-#     file = r'\crudeoil_train.csv'
-#     #file = r'\SP500- daily - 30Y_train.csv'
-#     BeckerH_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                           PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file,path_output,asset)
-#     file = r'\crudeoil_test.csv'
-#     #file = r'\SP500- daily - 30Y_test.csv'
-#     BeckeH_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                           PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output,asset)
-    
-    
-#     file = r'\crudeoil_train.csv'
-#     #file = r'\SP500- daily - 30Y_train.csv'
-#     Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                           PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file,path_output,asset)
-#     file = r'\crudeoil_test.csv'
-#     #file = r'\SP500- daily - 30Y_test.csv'
-#     Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                           PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output,asset)
-    
-    
-    #path_type = 'brownian_motion'
-    # path_type = 'real'
-    # AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'train')
-    # print('Price: ', AmericanPUT.price())
     
 ################################################################################
 # Exploring different assets performance:
 ################################################################################
 
-#asset_list = ['BCE','VZ','T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI','RE','AXP','C','DD','BHP','SCCO','OLN','MOS','INTC','HPQ','AMD','LOGI','ARW']
-#asset_list = ['VZ','T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI','RE','AXP','C','DD','BHP','SCCO','OLN','MOS','INTC','HPQ','AMD','LOGI','ARW']
-# asset_list = ['T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI','RE','AXP','C','DD','BHP','SCCO','OLN','MOS','INTC','HPQ','AMD','LOGI','ARW']
+asset_list = ['BCE','VZ','T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI','RE','AXP','C','DD','BHP','SCCO','OLN','MOS','INTC','HPQ','AMD','LOGI','ARW']
+asset_list = ['VZ','T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI','RE','AXP','C','DD','BHP','SCCO','OLN','MOS','INTC','HPQ','AMD','LOGI','ARW']
+asset_list = ['T','IPG','DISH','ABEV','LEN','F','BTI','GPS','BP','COP','CVX','COG','LNG','ACNB','ORI','RE','AXP','C','DD','BHP','SCCO','OLN','MOS','INTC','HPQ','AMD','LOGI','ARW']
 
 
-# path_output = 'Results/STOCKS/'
-# N = 100
-# for asset in asset_list:
+path_output = 'Results/STOCKS/'
+N = 100
+for asset in asset_list:
         
-#     num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[100,200,300],0.05,500,2000
+    num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[100,200,300],0.05,500,2000
     
-#     num_neurons = 50
-#     file = '/'+asset+'_train.csv'
-#     #file = r'\SP500- daily - 30Y_train.csv'
-#     Becker_mod_cnn_train_model_2(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                           PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file,path_output,asset)
-#     file = '/'+asset+'_test.csv'
-#     #file = r'\SP500- daily - 30Y_test.csv'
-#     Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
-#                           PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output,asset)
+    num_neurons = 50
+    file = '/'+asset+'_train.csv'
+    #file = r'\SP500- daily - 30Y_train.csv'
+    Becker_mod_cnn_train_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+                          PATH,num_neurons,lr_boundaries,lr_init,training_steps,path,file,path_output,asset)
+    file = '/'+asset+'_test.csv'
+    #file = r'\SP500- daily - 30Y_test.csv'
+    Becker_mod_cnn_test_model(s_0,K,T,N,r,delta,sigma,d,batch_size,order,type_of_data,
+                          PATH,num_neurons,lr_boundaries_NN,lr_init,mc_runs,training_steps,path,file,path_output,asset)
     
     
-    # file = '/'+asset+'_train.csv'
-    # sigma_data = calculate_sigma(path,file)
-    # sigma = sigma_data
-    # path_type = 'real'
-    # AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'train',file,path_output,asset)
-    # print('Price: ', AmericanPUT.price())
-    # file = '/'+asset+'_test.csv'
-    # AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'test',file,path_output,asset)
-    # print('Price: ', AmericanPUT.price())
-
-
-
-
-
-
-# N = 100
-# asset = 'BCE'
-# file = '/'+asset+'_test.csv'
-# sigma_data = calculate_sigma(path,file)
-# num_neurons,lr_boundaries,lr_init,training_steps,mc_runs = 50,[100,200,300],0.05,500,2000
-# sigma = sigma_data
-# num_neurons = 50
-# path_type = 'real'
-# file = '/'+asset+'_train.csv'
-# AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'train',file,path_output,asset)
-# print('Price: ', AmericanPUT.price())
-# AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'test',file,path_output,asset)
-# print('Price: ', AmericanPUT.price())
+    file = '/'+asset+'_train.csv'
+    sigma_data = calculate_sigma(path,file)
+    sigma = sigma_data
+    path_type = 'real'
+    AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'train',file,path_output,asset)
+    print('Price: ', AmericanPUT.price())
+    file = '/'+asset+'_test.csv'
+    AmericanPUT = AmericanOptionsLSMC('put',s_0, K, T, N, r, delta, sigma_data, int(8192/50)*mc_runs,path_type,'test',file,path_output,asset)
+    print('Price: ', AmericanPUT.price())
 
 
 

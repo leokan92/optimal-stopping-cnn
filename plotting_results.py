@@ -43,10 +43,10 @@ def create_dataframe_two_models(path,model_names,N_series):
             payoffs = np.load(path+model+'_'+N+'.npy',allow_pickle=True)
             payoffs = convert_array_tensor(payoffs)
             df_temp = pd.DataFrame({'Models':[model]*len(payoffs),'N':[N]*len(payoffs),'Expected Payoff':payoffs})
-            df_results = df_results.append(df_temp)
+            df_results = df_results.append(df_temp).reset_index().drop(columns = ['index'])
             df_results['Models'].replace('BeckeH','Becker', inplace=True)
             df_results['Models'].replace('Becker_cnn','CNN', inplace=True)
-            df_results['Models'].replace('Max_dist','Max Avg Payoff', inplace=True)
+            #df_results['Models'].replace('Max_dist','Max Avg Payoff', inplace=True)
     return df_results
 
 
@@ -67,10 +67,11 @@ N_series = results.N.values.astype(str)
 
 df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
 
+df_for_seaborn = df_for_seaborn[df_for_seaborn['Models']!='Max_dist']
 
-f = plt.figure(figsize=(15,5))
-sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
-# pallet options: Set1
+f = plt.figure(figsize=(6,3))
+g =  sns.lineplot(data=df_for_seaborn[['Models','N','Expected Payoff']], x="N", y="Expected Payoff", hue="Models",style='Models',palette = 'binary',ci = 95)
+g.set_xticks(np.arange(0, len(N_series)/2, 2))
 f.savefig('brownian_results.pdf', bbox_inches='tight')
 
 #################################################################################
@@ -94,7 +95,7 @@ temp.loc[temp['N']=='10'].std()
 temp.loc[temp['N']=='10'].mean()
 
 f = plt.figure(figsize=(15,5))
-sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary',ci=None)
 #sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
 # pallet options: Set1
 f.savefig('harmonic_results.pdf', bbox_inches='tight')
@@ -123,8 +124,7 @@ temp.loc[temp['N']=='10'].mean()
 
 f = plt.figure(figsize=(15,5))
 sns.lineplot(data=df_for_seaborn, x="N", y="Average Payoff", hue="Models",style='Models',palette = 'binary')
-#sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
-# pallet options: Set1
+
 f.savefig('fbm_results.pdf', bbox_inches='tight')
 
 
@@ -135,9 +135,6 @@ f.savefig('fbm_results.pdf', bbox_inches='tight')
 
 path = 'Results/HARM/'
 file_name = 'harmonic_results.txt'
-
-# path = 'Results/BROWNIAN/'
-# file_name = 'table_beckerdm.txt'
 
 model_names = 'BeckeH', 'Becker_cnn'
 
@@ -175,12 +172,6 @@ for N in N_test:
 #################################################################################
 # Plotting the training evolution for harmonic time-series
 #################################################################################
-
-# path = 'Results/BROWNIAN/'
-# file_name = 'brownian_results.txt'
-
-path = 'Results/HARM/'
-file_name = 'harmonic_results.txt'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
 results.columns = ['N','Payoff','Max Payoff','Payoff Std']
@@ -251,17 +242,19 @@ plt.savefig('training_fbm.pdf', bbox_inches='tight')
 
 path = 'Results/Energy/'
 file_name = 'table_cnnreal_val.txt'
-model_names = 'Becker_cnn', 'LSMC','Max_dist'
+model_names = 'Becker_cnn','BeckeH', 'LSMC','Max_dist'
 
 results = pd.read_csv(path+file_name, delimiter = ";", header=None)
 results.columns = ['N','Payoff','Max Payoff','Payoff Std']
 
 N_series = np.unique(results.N.values).astype(str)[:-1]
 
-df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)
+df_for_seaborn = create_dataframe_two_models(path,model_names,N_series)     
 
-f = plt.figure(figsize=(15,5))
-sns.lineplot(data=df_for_seaborn, x="N", y="Expected Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+f = plt.figure(figsize=(6,3))
+g = sns.lineplot(data=df_for_seaborn, x="N", y="Expected Payoff", hue="Models",style='Models',palette = 'binary',ci='sd')
+g.set_xticks(np.arange(0, len(N_series)/2, 2)) 
+g.legend(title='Models', loc='upper left', labels=['CNN','Becker','LSMC','Max Avg Payoff']) 
 #sns.lineplot(data=df_for_seaborn, x="N", y="Payoff", hue="Models",palette = 'binary')
 # pallet options: Set1
 f.savefig('energy_results.pdf', bbox_inches='tight')
@@ -415,56 +408,4 @@ sns.displot({'LSMC testing returns Vol.':lsmc_test,'Max Value Dist.':max_dist,'C
 plt.title('Payoff comprarison| LSCM x CNN x Max| N = '+str(N))
 plt.xlim(-5,20)
 plt.show()
-
-
-
-
-
-
-"""
-for line in std_payoff:
-    plt.plot(N_series,line)
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Std payoff')
-plt.legend(models_names)
-plt.show()
-
-mean = (np.asarray(payoff[number_of_models-1])-np.asarray(payoff[0]))/np.asarray(payoff[number_of_models-1])*100
-
-plt.plot(N_series,mean)
-plt.axhline(y=0, color='r', linestyle='-')
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Diff CNN and Becker Payoff')
-plt.legend(['CNN percentual increase','Zero line'])
-plt.show()
-
-
-std = 100*(np.asarray(std_payoff[number_of_models-1])+np.asarray(std_payoff[0]))/np.asarray(payoff[number_of_models-1])+ 100*np.asarray(std_payoff[number_of_models-1])/(np.asarray(payoff[0])+np.asarray(payoff[number_of_models-1]))
-
-       
-plt.plot(N_series,(std))
-plt.axhline(y=0, color='r', linestyle='-')
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Diff CNN and Becker Std dev')
-plt.legend(['CNN percentual increase','Zero line'])
-plt.show()
-
-
-plt.errorbar(range(0,len(mean)), mean, std, fmt='-o')
-plt.show()
-
-
-plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2])))
-plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2]))+np.asarray(std_payoff[2])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[2])/np.asarray(payoff[2]))-np.asarray(std_payoff[2])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2]))+np.asarray(std_payoff[0])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2]))-np.asarray(std_payoff[0])/np.asarray(payoff[2]))
-plt.plot(N_series,(np.asarray(payoff[0])/np.asarray(payoff[2])))
-plt.xlabel('Number of Bermudan steps (N)')
-plt.ylabel('Diff CNN and Becker Std dev')
-plt.legend(['CNN percentual increase'])
-plt.show()
-
-
-"""
 
