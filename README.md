@@ -54,6 +54,7 @@ To reproduce the figures presented in the paper, it is possible to use the [plot
 
 If you re-use this work, please cite:
 
+```
 @INPROCEEDINGS{Felizardo2022,
   author={Leonardo Kanashiro Felizardo and Elia Yathie Matsumoto and Emilio Del-Moral-Hernandez},
   booktitle={2022 International Joint Conference on Neural Networks (IJCNN)}, 
@@ -63,7 +64,7 @@ If you re-use this work, please cite:
   number={},
   pages={1-8},
   doi={}}
-
+```
 
 
 
